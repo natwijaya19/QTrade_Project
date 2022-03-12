@@ -67,8 +67,6 @@ dailyRet = tick2ret(equityCurvePortfolioVar);
 dailyRet(isnan(dailyRet)) = 0;
 DailyRetMin = min(dailyRet);
 
-clearvars dataInput wfaSetUpParam
-
 %==========================================================================
 
 %% Last 20 days return

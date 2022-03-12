@@ -68,7 +68,6 @@ volumeSignal(isinf(volumeSignal)) = 0;
 % barFig = bar(signal);
 % title("volumeSignal")
 
-clear volumeMA volumeTT
 %=======================================================================
 
 %% Signal value threshold
@@ -83,14 +82,12 @@ valueMA(isnan(valueMA)) = 0;
 valueMA(isinf(valueMA)) = 0;
 
 valueSignal = valueMA > valueThreshold ;
-clear valueMA tradeValue
 
 % % check
 % signal = sum(valueSignal,2);
 % barFig = bar(signal);
 % title("valueSignal")
 
-clear volumeMA volumeTT closePriceTT tradeValue valueMA
 %=======================================================================
 
 %% Volume value buffer days
@@ -104,7 +101,6 @@ volumeValueBufferSignal = movmax(volumeValueSignal,[volumeValueBufferDays, 0], 1
 % barFig = bar(signal);
 % title("volumeValueBufferSignal")
 
-clear volumeValueSignal valueSignal
 
 %=======================================================================
 
@@ -126,7 +122,6 @@ priceRetLowCloseSignal = priceRetLowClose > priceRetLowCloseThresh;
 % barFig = bar(signal);
 % title("priceRetLowCloseSignal")
 
-clear lowPriceTT closePriceTT priceRetLowClose
 %=======================================================================
 
 %% price MA signal
@@ -145,7 +140,6 @@ priceMASignal = closePriceTT.Variables > (priceMA .* priceMAThreshold);
 % barFig = bar(signal);
 % title("priceMASignal")
 
-clear closePriceTT volumeTT priceMA
 
 %=======================================================================
 
@@ -181,8 +175,6 @@ cutlossSignal = LastHightoCloseRet > (-cutLossPct);
 % signal = sum(cutlossSignal,2);
 % barFig = bar(signal);
 % title("cutlossSignal")
-
-clearvars highpriceTT closePriceTT LastHightoCloseRet lastHighPrice
 
 %=======================================================================
 

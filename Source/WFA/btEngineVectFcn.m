@@ -1,4 +1,4 @@
-function resultStruct = btEngineVectFcn (dataInputBT, tradeSignalInput, wfaSetUpParam)
+function btResults = btEngineVectFcn (dataInputBT, tradeSignalInput, paramSetWFA)
 
 % backtesterEngineFcn generate output backtesting signal against price
 %
@@ -20,24 +20,19 @@ function resultStruct = btEngineVectFcn (dataInputBT, tradeSignalInput, wfaSetUp
 % fullFileName = fullfile(path, fileName);
 % dataInput = load(fullFileName); % struct data transfer
 %
-% tradingSignalParameter =[               % open the array
-%                             80        % liquidityVolumeMALookback = paramInput(1);
-%                             0.1        % liquidityVolumeMAThreshold = paramInput(2);
-%                             3       %liquidityVolumeMANDayBuffer = paramInput(3)
-%                             80        % liquidityValueMALookback  = paramInput(4);
-%                             0.1        % liquidityValueeMAThreshold  = paramInput(5);
-%                             3       %liquidityValueMANDayBuffer = paramInput(6)
-%                             20        % liquidityNDayVolumeValueBuffer = paramInput(7);
-%                             20        % momentumPriceMALookback = paramInput(8);
-%                             1.2        % momentumPriceMAToCloseThreshold = paramInput(9);
-%                             1        % momentumPriceRetLowToCloseLookback = paramInput(10);
-%                             0.05        % momentumPriceRetLowToCloseThreshold = paramInput(11);
-%                             3        % momentumPriceRetLowToCloseNDayBuffer = paramInput(12);
-%                             5        % liquidityMomentumSignalBuffer = paramInput(13);
-%                             5        % cutLossHighToCloseNDayLookback = paramInput(14);
-%                             0.05        % cutLossHighToCloseMaxPct = paramInput(15);
-%                             1        % nDayBackShift = paramInput(16);
-%                                 ] ;  % close the array
+% tradingSignalParameter = [
+%     40  %1
+%     200 %2
+%     5   %3
+%     5   %4
+%     10  %5
+%     8   %6
+%     120 %7
+%     20  %8
+%     5   %9
+%     8   %10
+%     5   %11
+%     ]
 %
 
 %================================================================================
@@ -46,7 +41,7 @@ function resultStruct = btEngineVectFcn (dataInputBT, tradeSignalInput, wfaSetUp
 arguments
     dataInputBT cell
     tradeSignalInput timetable
-    wfaSetUpParam struct
+    paramSetWFA struct
 
 end
 
@@ -57,9 +52,9 @@ end
 openPrice = dataInputBT{1};
 closePrice = dataInputBT{4};
 
-backShiftNDay = wfaSetUpParam.backShiftNDay;
-tradingCost = wfaSetUpParam.tradingCost;
-maxCapAllocation = wfaSetUpParam.maxCapAllocation;
+backShiftNDay = paramSetWFA.backShiftNDay;
+tradingCost = paramSetWFA.tradingCost;
+maxCapAllocation = paramSetWFA.maxCapAllocation;
 
 symbols = string(closePrice.Properties.VariableNames);
 symbols = strrep(symbols,"_close","");
@@ -72,7 +67,6 @@ sellCost = tradingCost(2);
 tradingSignal = tradeSignalInput;
 tradingSignal.Variables = backShiftFcn (tradeSignalInput.Variables , backShiftNDay);
 
-clearvars dataStructInput tradeSignalInput wfaSetUpParam
 
 %================================================================================
 
@@ -92,9 +86,6 @@ signalVar = signal.Variables;
 signalVarString = string(signalVar);
 signalVar = double(signalVarString);
 signalVar(isnan(signalVar)) = 0;
-
-clearvars openPriceVarString closePriceVarString signalVarString
-
 
 %================================================================================
 
@@ -252,7 +243,7 @@ TT = timetable('Size', sz, 'VariableTypes', variableTypes,...
 
 dailyNetRetPortfolioTT = TT;
 dailyNetRetPortfolioTT.Variables = dailyNetRetPortfolio;
-resultStruct.dailyNetRetPortfolioTT = dailyNetRetPortfolioTT;
+btResults.dailyNetRetPortfolioTT = dailyNetRetPortfolioTT;
 
 
 % equityCurvePortfolio
@@ -274,7 +265,7 @@ TT = timetable('Size', sz, 'VariableTypes', variableTypes,...
 
 equityCurvePortfolioTT = TT;
 equityCurvePortfolioTT.Variables = equityCurvePortfolio;
-resultStruct.equityCurvePortfolioTT = equityCurvePortfolioTT;
+btResults.equityCurvePortfolioTT = equityCurvePortfolioTT;
 
 %================================================================================
 
@@ -302,7 +293,7 @@ TT = timetable('Size', sz, 'VariableTypes', variableTypes,...
 dailyNetRetPerSymTT = TT;
 dailyNetRetPerSymTT.Variables = dailyNetRetPerSym;
 dailyNetRetPerSymTT.Properties.VariableNames = symbols;
-resultStruct.dailyNetRetPerSymTT = dailyNetRetPerSymTT;
+btResults.dailyNetRetPerSymTT = dailyNetRetPerSymTT;
 
 % equityCurvePerSym
 equityCurvePerSym = ret2tick(dailyNetRetPerSym);
@@ -310,7 +301,7 @@ equityCurvePerSym(1,:) = [];
 equityCurvePerSymTT = openPrice;
 equityCurvePerSymTT.Variables = equityCurvePerSym;
 equityCurvePerSymTT.Properties.VariableNames = symbols;
-resultStruct.equityCurvePerSymTT = equityCurvePerSymTT;
+btResults.equityCurvePerSymTT = equityCurvePerSymTT;
 
 %================================================================================
 
@@ -319,18 +310,18 @@ buyCostPortion;
 DailyBuyCost = sum(buyCostPortion,2);
 totalDailyBuyCost = DailyBuyCost .* equityCurvePortfolio;
 totalBuyCost = sum(totalDailyBuyCost) ;
-resultStruct.totalBuyCost = totalBuyCost;
+btResults.totalBuyCost = totalBuyCost;
 
 % totalSellCost
 sellCostPortion;
 dailySellCost = sum(sellCostPortion,2);
 totalDailySellCost =  dailySellCost .* equityCurvePortfolio;
 totalSellCost = sum(totalDailySellCost);
-resultStruct.totalSellCost = totalSellCost;
+btResults.totalSellCost = totalSellCost;
 
 % totalSlippage
 totalSlippageCost = totalSlippageCostOfSodNetBuyPortion + totalSlippageCostOfGrossSellPortion ;
-resultStruct.totalSlippageCost = totalSlippageCost;
+btResults.totalSlippageCost = totalSlippageCost;
 
 %================================================================================
 
@@ -341,6 +332,6 @@ resultStruct.totalSlippageCost = totalSlippageCost;
 
 %%
 
-clearvars -except resultStruct
+clearvars -except btResults
 
 end

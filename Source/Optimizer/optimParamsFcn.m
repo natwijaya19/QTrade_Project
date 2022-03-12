@@ -18,13 +18,13 @@ end
 %=========================================================================
 
 %% paralel pool
-% pool = gcp('nocreate'); % Check whether a parallel pool exists
-% if isempty(pool) % If not, create one
-%     pool = parpool;
-% end
-% 
-% N = pool.NumWorkers;
-useParallel = false;
+pool = gcp('nocreate'); % Check whether a parallel pool exists
+if isempty(pool) % If not, create one
+    pool = parpool;
+end
+
+N = pool.NumWorkers;
+useParallel = true;
 
 % sample input args
 % optimizedParameter
@@ -62,9 +62,9 @@ UB = LBUBConst(:,2)';
 %% setup optimization options
 options = optimoptions('surrogateopt','PlotFcn',"surrogateoptplot", ...
     "ConstraintTolerance",1e-2, "UseParallel", useParallel,...
-    "UseVectorized",true,"MaxFunctionEvaluations", maxFcnEval);
+    "UseVectorized",true,"MaxFunctionEvaluations", maxFcnEval, "BatchUpdateInterval", N);
 
-% "BatchUpdateInterval", N
+% 
 
 %% call surrogateopt to solve the problem
 [sol,fval,exitflag,output] = surrogateopt(F,LB,UB,intConst,options) ;

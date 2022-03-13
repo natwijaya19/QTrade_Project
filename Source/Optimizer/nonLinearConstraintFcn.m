@@ -1,4 +1,4 @@
-function [c, ceq] = nonLinearConstraintFcn (tradingSignalParam, dataInput, wfaSetUpParam)
+function [c, ceq] = nonLinearConstraintFcn (tradingSignalParam, dataInput, paramSetWFA)
 % nonLinearConstraintFcn
 %
 % USAGE:
@@ -20,14 +20,14 @@ function [c, ceq] = nonLinearConstraintFcn (tradingSignalParam, dataInput, wfaSe
 
 %%
 % transfer input variables
-optimLookbackStep = wfaSetUpParam.optimLookbackStep;
-minSharpeRatio = wfaSetUpParam.minSharpeRatio;
-maxDDThreshold = wfaSetUpParam.maxDDThreshold;
-minPortRet = wfaSetUpParam.minPortRet;
-minDailyRetThreshold = wfaSetUpParam.minDailyRetThreshold;
-minLast20DRetThreshold = wfaSetUpParam.minLast20DRetThreshold ;
-minLast60DRetThreshold = wfaSetUpParam.minLast60DRetThreshold ;
-minLast200DRetThreshold = wfaSetUpParam.minLast200DRetThreshold ;
+optimLookbackStep = paramSetWFA.optimLookbackStep;
+minSharpeRatio = paramSetWFA.minSharpeRatio;
+maxDDThreshold = paramSetWFA.maxDDThreshold;
+minPortRet = paramSetWFA.minPortRet;
+minDailyRetThreshold = paramSetWFA.minDailyRetThreshold;
+minLast20DRetThreshold = paramSetWFA.minLast20DRetThreshold ;
+minLast60DRetThreshold = paramSetWFA.minLast60DRetThreshold ;
+minLast200DRetThreshold = paramSetWFA.minLast200DRetThreshold ;
 
 % generate signal
 tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInput);
@@ -35,7 +35,7 @@ tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInput);
 % backtest the signal against the price
 tradingSignalIn = tradingSignalOut;
 
-resultStruct = btEngineVectFcn (dataInput, tradingSignalIn,wfaSetUpParam);
+resultStruct = btEngineEventDrivenFcn (dataInput, tradingSignalIn,paramSetWFA);
 
 % calculate equityCurve at for the evaluation
 equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;

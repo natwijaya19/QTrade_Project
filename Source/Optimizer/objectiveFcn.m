@@ -1,4 +1,4 @@
-function Fval = objectiveFcn (tradingSignalParam, dataInputBT, wfaSetUpParam)
+function Fval = objectiveFcn (tradingSignalParam, dataInputBT, paramSetWFA)
     %
     % USAGE:
     %       Fval = objectiveFcn (tradingSignalParam, dataStructInput, optimLookbackStep)
@@ -11,7 +11,7 @@ function Fval = objectiveFcn (tradingSignalParam, dataInputBT, wfaSetUpParam)
     
     % prepare data input
     % tradingSignalParam = tradingSignalParameter;
-    optimLookbackStep = wfaSetUpParam.lookbackUB;
+    optimLookbackStep = paramSetWFA.lookbackUB;
 
     
     % generate signal
@@ -19,7 +19,7 @@ function Fval = objectiveFcn (tradingSignalParam, dataInputBT, wfaSetUpParam)
     
     % backtest the signal against the price
     tradeSignalInput = tradingSignalOut;
-    resultStruct = btEngineVectFcn (dataInputBT, tradeSignalInput, wfaSetUpParam);
+    resultStruct = btEngineEventDrivenFcn(dataInputBT, tradeSignalInput, paramSetWFA);
     
     % calculate equityCurve at for the evaluation
     equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;

@@ -35,7 +35,7 @@ tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInput);
 % backtest the signal against the price
 tradingSignalIn = tradingSignalOut;
 
-resultStruct = btEngineEventDrivenFcn (dataInput, tradingSignalIn,paramSetWFA);
+resultStruct = btEngineVectFcn(dataInput, tradingSignalIn,paramSetWFA);
 
 % calculate equityCurve at for the evaluation
 equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;

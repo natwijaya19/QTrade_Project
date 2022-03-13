@@ -19,7 +19,7 @@ function Fval = objectiveFcn (tradingSignalParam, dataInputBT, paramSetWFA)
     
     % backtest the signal against the price
     tradeSignalInput = tradingSignalOut;
-    resultStruct = btEngineEventDrivenFcn(dataInputBT, tradeSignalInput, paramSetWFA);
+    resultStruct = btEngineVectFcn(dataInputBT, tradeSignalInput, paramSetWFA);
     
     % calculate equityCurve at for the evaluation
     equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;

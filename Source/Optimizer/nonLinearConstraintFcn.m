@@ -34,8 +34,10 @@ tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInput);
 
 % backtest the signal against the price
 tradingSignalIn = tradingSignalOut;
+clearvars tradingSignalOut
 
 resultStruct = btEngineVectFcn(dataInput, tradingSignalIn,paramSetWFA);
+clearvars dataInput tradingSignalIn paramSetWFA
 
 % calculate equityCurve at for the evaluation
 equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;
@@ -43,6 +45,7 @@ equityCurvePortfolioVar = equityCurvePortfolioVar_raw(end-optimLookbackStep+1: e
 equityCurvePortfolioVar = string(equityCurvePortfolioVar);
 equityCurvePortfolioVar = double(equityCurvePortfolioVar);
 equityCurvePortfolioVar = fillmissing(equityCurvePortfolioVar, "previous");
+clearvars equityCurvePortfolioVar_raw
 
 %% calcluate return for the given  optimLookbackWindow minPortfolioReturn
 startOptimPortValue = equityCurvePortfolioVar(1);
@@ -50,7 +53,7 @@ endOptimPortValue = equityCurvePortfolioVar(end);
 cumPortfolioReturn = endOptimPortValue / startOptimPortValue;
 cumPortfolioReturn(isnan(cumPortfolioReturn)) = 0;
 cumPortfolioReturn(isinf(cumPortfolioReturn)) = 0;
-
+clearvars endOptimPortValue startOptimPortValue
 
 %% Risk-reward ratios
 risklessAssetRet = 0 ;
@@ -58,6 +61,7 @@ dailyNetRetPortfolioTT = resultStruct.dailyNetRetPortfolioTT;
 sharpeRatio = sharpe(dailyNetRetPortfolioTT.Variables, risklessAssetRet) *sqrt (252);
 sharpeRatio(isnan(sharpeRatio)) = 0 ;
 sharpeRatio(isinf(sharpeRatio)) = 0 ;
+clearvars resultStruct dailyNetRetPortfolioTT
 
 %% calculate maxDD for maxDDThreshold
 maxDD = -maxdrawdown(equityCurvePortfolioVar);
@@ -66,6 +70,7 @@ maxDD = -maxdrawdown(equityCurvePortfolioVar);
 dailyRet = tick2ret(equityCurvePortfolioVar);
 dailyRet(isnan(dailyRet)) = 0;
 DailyRetMin = min(dailyRet);
+clearvars dailyRet
 
 %==========================================================================
 
@@ -86,6 +91,7 @@ else
     Last20DRetMin = min(Last20DRet);
 
 end
+clearvars Last20DRet
 
 %==========================================================================
 
@@ -105,7 +111,7 @@ else
     Last60DRetMin = min(Last60DRet);
 
 end
-
+clearvars Last60DRet
 %==========================================================================
 
 %% Last 200 days return
@@ -125,6 +131,8 @@ else
     Last200DRetMin = min(Last200DRet);
 
 end
+
+clearvars equityCurvePortfolioVar Last200DRet
 
 %==========================================================================
 

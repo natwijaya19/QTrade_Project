@@ -67,25 +67,28 @@ sellCost = tradingCost(2);
 tradingSignal = tradeSignalInput;
 tradingSignal.Variables = backShiftFcn (tradeSignalInput.Variables , backShiftNDay);
 
+clearvars dataInputBT paramSetWFA
 
 %================================================================================
 
 %% data preparation
 openPriceVar = openPrice.Variables;
-openPriceVarString = string(openPriceVar);
-openPriceVar = double(openPriceVarString);
+openPriceVar = string(openPriceVar);
+openPriceVar = double(openPriceVar);
 openPriceVar(isnan(openPriceVar)) = 0;
 
 closePriceVar = closePrice.Variables;
-closePriceVarString = string(closePriceVar);
-closePriceVar = double(closePriceVarString);
+closePriceVar = string(closePriceVar);
+closePriceVar = double(closePriceVar);
 closePriceVar(isnan(closePriceVar)) = 0;
 
 signal = tradingSignal;
 signalVar = signal.Variables;
-signalVarString = string(signalVar);
-signalVar = double(signalVarString);
+signalVar = string(signalVar);
+signalVar = double(signalVar);
 signalVar(isnan(signalVar)) = 0;
+
+clearvars tradingSignal 
 
 %================================================================================
 
@@ -113,6 +116,8 @@ sodTotalAsset = ones(numel(nSignalDaily),1);
 sodInvestedCapitalPerSym = capAllocPerSym;
 sodTotalInvestedCapital = sum(sodInvestedCapitalPerSym,2);
 sodCash = sodTotalAsset - sum(sodInvestedCapitalPerSym,2);
+
+clearvars sodTotalInvestedCapital
 %------------------------------------------------------------------------
 
 
@@ -138,6 +143,8 @@ sz = size(signalVar);
 sodPrevRemainPortion = zeros(sz);
 sodPrevRemainPortion(2:end,:) = capAllocPerSym(1:end-1,:) - sodGrossSellPortion(2:end,:);
 
+clearvars capAlloc capAllocPerSym buySellPortion
+
 %================================================================================
 
 %% calculate net invested value from buy portion at the end of day eodNetBuyPortion
@@ -150,6 +157,8 @@ sodGrossBuyPortion;
 sodNetBuyPortion = sodGrossBuyPortion ./ (1+buyCost);
 sodNetBuyPortion(isnan(sodNetBuyPortion)) = 0;
 buyCostPortion = sodGrossBuyPortion - sodNetBuyPortion;
+
+clearvars sodGrossBuyPortion
 
 % closeToClosePriceRet is dailyRet without slippage
 closeToClosePriceRet = zeros(size(signalVar));
@@ -188,6 +197,7 @@ closeToClosePriceRet(isinf(closeToClosePriceRet)) = 0;
 
 eodPrevRemainPortion = sodPrevRemainPortion .*(1+closeToClosePriceRet);
 
+clearvars sodPrevRemainPortion closeToClosePriceRet
 %================================================================================
 
 %% calculate sellCostPortion from sodGrossSellPortion. This portion will
@@ -214,16 +224,22 @@ slippageCostOfGrossSellPortion = sodGrossSellPortionAtOpenPrice - sodGrossSellPo
 dailySlippageCostOfGrossSellPortion = sum(slippageCostOfGrossSellPortion,2);
 totalSlippageCostOfGrossSellPortion = sum(dailySlippageCostOfGrossSellPortion);
 
+clearvars signalVar sodGrossSellPortion closeToOpenPriceRet sodGrossSellPortionAtOpenPrice 
+clearvars slippageCostOfGrossSellPortion dailySlippageCostOfGrossSellPortion
 %================================================================================
 
 %% calculate end of day (EOD) invested capital
 eodInvestedCapital = eodNetBuyPortion + eodPrevRemainPortion;
 eodTotalInvestedCapital = sum(eodInvestedCapital,2);
 
+clearvars eodInvestedCapital
+
 % calculate total asset = invested capital + cash at the end of day (EOD)
 eodCash = sodCash;
 totalDailySellCostPortion;
 eodTotalAsset = eodCash + eodTotalInvestedCapital - totalDailySellCostPortion;
+
+clearvars eodTotalInvestedCapital
 
 % calculate daily return dailyRet
 dailyNetRetPortfolio = (eodTotalAsset ./ sodTotalAsset) - 1;
@@ -245,6 +261,7 @@ dailyNetRetPortfolioTT = TT;
 dailyNetRetPortfolioTT.Variables = dailyNetRetPortfolio;
 btResults.dailyNetRetPortfolioTT = dailyNetRetPortfolioTT;
 
+clearvars sodTotalAsset totalDailySellCostPortion eodTotalAsset dailyNetRetPortfolioTT
 
 % equityCurvePortfolio
 equityCurvePortfolio = ret2tick (dailyNetRetPortfolio);
@@ -267,6 +284,8 @@ equityCurvePortfolioTT = TT;
 equityCurvePortfolioTT.Variables = equityCurvePortfolio;
 btResults.equityCurvePortfolioTT = equityCurvePortfolioTT;
 
+clearvars nSignalDaily dailyNetRetPortfolio equityCurvePortfolioTT
+
 %================================================================================
 
 %% dailyNetRetPerSym can be calculated buy taking into account the
@@ -275,6 +294,8 @@ eodInvestedCapitalPerSym = eodNetBuyPortion + eodPrevRemainPortion - sellCostPor
 dailyNetRetPerSym = (eodInvestedCapitalPerSym ./ sodInvestedCapitalPerSym) - 1 ;
 dailyNetRetPerSym(isnan(dailyNetRetPerSym)) = 0;
 dailyNetRetPerSym(isinf(dailyNetRetPerSym)) = 0;
+
+clearvars sodInvestedCapitalPerSym eodInvestedCapitalPerSym eodPrevRemainPortion
 
 %================================================================================
 
@@ -295,6 +316,8 @@ dailyNetRetPerSymTT.Variables = dailyNetRetPerSym;
 dailyNetRetPerSymTT.Properties.VariableNames = symbols;
 btResults.dailyNetRetPerSymTT = dailyNetRetPerSymTT;
 
+clearvars dailyNetRetPerSymTT
+
 % equityCurvePerSym
 equityCurvePerSym = ret2tick(dailyNetRetPerSym);
 equityCurvePerSym(1,:) = [];
@@ -302,6 +325,8 @@ equityCurvePerSymTT = openPrice;
 equityCurvePerSymTT.Variables = equityCurvePerSym;
 equityCurvePerSymTT.Properties.VariableNames = symbols;
 btResults.equityCurvePerSymTT = equityCurvePerSymTT;
+
+clearvars equityCurvePerSym equityCurvePerSymTT symbols
 
 %================================================================================
 
@@ -311,6 +336,8 @@ DailyBuyCost = sum(buyCostPortion,2);
 totalDailyBuyCost = DailyBuyCost .* equityCurvePortfolio;
 totalBuyCost = sum(totalDailyBuyCost) ;
 btResults.totalBuyCost = totalBuyCost;
+
+clearvars DailyBuyCost totalDailyBuyCost totalBuyCost
 
 % totalSellCost
 sellCostPortion;
@@ -323,6 +350,8 @@ btResults.totalSellCost = totalSellCost;
 totalSlippageCost = totalSlippageCostOfSodNetBuyPortion + totalSlippageCostOfGrossSellPortion ;
 btResults.totalSlippageCost = totalSlippageCost;
 
+clearvars sodNetBuyPortion equityCurvePortfolio sellCostPortion dailySellCost 
+clearvars totalDailySellCost totalSellCost totalSlippageCost
 %================================================================================
 
 % TODO summary statistics

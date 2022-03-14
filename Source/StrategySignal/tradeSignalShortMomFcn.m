@@ -68,6 +68,8 @@ volumeSignal(isinf(volumeSignal)) = 0;
 % barFig = bar(signal);
 % title("volumeSignal")
 
+clearvars volumeTT volumeMA
+
 %=======================================================================
 
 %% Signal value threshold
@@ -88,6 +90,8 @@ valueSignal = valueMA > valueThreshold ;
 % barFig = bar(signal);
 % title("valueSignal")
 
+clearvars tradeValue volumeTT volumeMA closePriceTT
+
 %=======================================================================
 
 %% Volume value buffer days
@@ -101,7 +105,7 @@ volumeValueBufferSignal = movmax(volumeValueSignal,[volumeValueBufferDays, 0], 1
 % barFig = bar(signal);
 % title("volumeValueBufferSignal")
 
-
+clearvars volumeValueSignal volumeSignal valueSignal
 %=======================================================================
 
 %% Signal price return from low to close
@@ -122,6 +126,8 @@ priceRetLowCloseSignal = priceRetLowClose > priceRetLowCloseThresh;
 % barFig = bar(signal);
 % title("priceRetLowCloseSignal")
 
+clearvars lowPriceTT closePriceTT priceRetLowClose 
+
 %=======================================================================
 
 %% price MA signal
@@ -140,6 +146,7 @@ priceMASignal = closePriceTT.Variables > (priceMA .* priceMAThreshold);
 % barFig = bar(signal);
 % title("priceMASignal")
 
+clearvars closePriceTT priceMA
 
 %=======================================================================
 
@@ -154,6 +161,8 @@ priceVolumeValueBufferSignal = movmax(priceVolumeValueBuffer,[priceVolumeValueBu
 % signal = sum(priceVolumeValueBufferSignal,2);
 % barFig = bar(signal);
 % title("priceVolumeValueBufferSignal")
+
+clearvars priceVolumeValueBuffer volumeValueBufferSignal priceRetLowCloseSignal priceMASignal
 
 %=======================================================================
 
@@ -176,6 +185,8 @@ cutlossSignal = LastHightoCloseRet > (-cutLossPct);
 % barFig = bar(signal);
 % title("cutlossSignal")
 
+clearvars highPriceTT closePriceTT lastHighPrice LastHightoCloseRet
+
 %=======================================================================
 
 %% Pre final signal (not yet 1 step lag shifted to avoid look ahead bias)
@@ -185,6 +196,8 @@ finalSignal = priceVolumeValueBufferSignal .* cutlossSignal;
 % signal = sum(preFinalSignal,2);
 % barFig = bar(signal);
 % title("preFinalSignal")
+
+clearvars priceVolumeValueBufferSignal cutlossSignal
 
 %=======================================================================
 

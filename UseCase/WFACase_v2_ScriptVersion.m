@@ -31,10 +31,9 @@ end
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=18)
+paramSetWFA = setUpWFAParam(marketData, nWalk=18, maxFcnEval=50)
 
 clearvars marketData dataInputPreSelect
-
 
 %% runWFA
 tic

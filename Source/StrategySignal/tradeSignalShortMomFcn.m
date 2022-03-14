@@ -178,6 +178,9 @@ lastHighPrice(isnan(lastHighPrice)) = 0;
 lastHighPrice(isinf(lastHighPrice)) = 0;
 
 LastHightoCloseRet = (closePriceTT.Variables ./ lastHighPrice) -1 ;
+LastHightoCloseRet(isnan(LastHightoCloseRet)) = 0;
+LastHightoCloseRet(isinf(LastHightoCloseRet)) = 0;
+
 cutlossSignal = LastHightoCloseRet > (-cutLossPct);
 
 % % check

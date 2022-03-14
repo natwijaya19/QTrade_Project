@@ -11,7 +11,7 @@ function Fval = objectiveFcn (tradingSignalParam, dataInputBT, paramSetWFA)
     
     % prepare data input
     % tradingSignalParam = tradingSignalParameter;
-    optimLookbackStep = paramSetWFA.lookbackUB;
+    optimLookbackStep = paramSetWFA.optimLookbackStep;
 
     
     % generate signal

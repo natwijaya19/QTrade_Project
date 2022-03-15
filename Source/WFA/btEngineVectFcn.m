@@ -67,7 +67,7 @@ sellCost = tradingCost(2);
 tradingSignal = tradeSignalInput;
 tradingSignal.Variables = backShiftFcn (tradeSignalInput.Variables , backShiftNDay);
 
-clearvars dataInputBT paramSetWFA
+clear dataInputBT paramSetWFA
 
 %================================================================================
 
@@ -88,7 +88,7 @@ signalVar = string(signalVar);
 signalVar = double(signalVar);
 signalVar(isnan(signalVar)) = 0;
 
-clearvars tradingSignal 
+clear tradingSignal 
 
 %================================================================================
 
@@ -117,7 +117,7 @@ sodInvestedCapitalPerSym = capAllocPerSym;
 sodTotalInvestedCapital = sum(sodInvestedCapitalPerSym,2);
 sodCash = sodTotalAsset - sum(sodInvestedCapitalPerSym,2);
 
-clearvars sodTotalInvestedCapital
+clear sodTotalInvestedCapital
 %------------------------------------------------------------------------
 
 
@@ -143,7 +143,7 @@ sz = size(signalVar);
 sodPrevRemainPortion = zeros(sz);
 sodPrevRemainPortion(2:end,:) = capAllocPerSym(1:end-1,:) - sodGrossSellPortion(2:end,:);
 
-clearvars capAlloc capAllocPerSym buySellPortion
+clear capAlloc capAllocPerSym buySellPortion
 
 %================================================================================
 
@@ -158,7 +158,7 @@ sodNetBuyPortion = sodGrossBuyPortion ./ (1+buyCost);
 sodNetBuyPortion(isnan(sodNetBuyPortion)) = 0;
 buyCostPortion = sodGrossBuyPortion - sodNetBuyPortion;
 
-clearvars sodGrossBuyPortion
+clear sodGrossBuyPortion
 
 % closeToClosePriceRet is dailyRet without slippage
 closeToClosePriceRet = zeros(size(signalVar));
@@ -197,7 +197,7 @@ closeToClosePriceRet(isinf(closeToClosePriceRet)) = 0;
 
 eodPrevRemainPortion = sodPrevRemainPortion .*(1+closeToClosePriceRet);
 
-clearvars sodPrevRemainPortion closeToClosePriceRet
+clear sodPrevRemainPortion closeToClosePriceRet
 %================================================================================
 
 %% calculate sellCostPortion from sodGrossSellPortion. This portion will
@@ -224,22 +224,22 @@ slippageCostOfGrossSellPortion = sodGrossSellPortionAtOpenPrice - sodGrossSellPo
 dailySlippageCostOfGrossSellPortion = sum(slippageCostOfGrossSellPortion,2);
 totalSlippageCostOfGrossSellPortion = sum(dailySlippageCostOfGrossSellPortion);
 
-clearvars signalVar sodGrossSellPortion closeToOpenPriceRet sodGrossSellPortionAtOpenPrice 
-clearvars slippageCostOfGrossSellPortion dailySlippageCostOfGrossSellPortion
+clear signalVar sodGrossSellPortion closeToOpenPriceRet sodGrossSellPortionAtOpenPrice 
+clear slippageCostOfGrossSellPortion dailySlippageCostOfGrossSellPortion
 %================================================================================
 
 %% calculate end of day (EOD) invested capital
 eodInvestedCapital = eodNetBuyPortion + eodPrevRemainPortion;
 eodTotalInvestedCapital = sum(eodInvestedCapital,2);
 
-clearvars eodInvestedCapital
+clear eodInvestedCapital
 
 % calculate total asset = invested capital + cash at the end of day (EOD)
 eodCash = sodCash;
 totalDailySellCostPortion;
 eodTotalAsset = eodCash + eodTotalInvestedCapital - totalDailySellCostPortion;
 
-clearvars eodTotalInvestedCapital
+clear eodTotalInvestedCapital
 
 % calculate daily return dailyRet
 dailyNetRetPortfolio = (eodTotalAsset ./ sodTotalAsset) - 1;
@@ -261,7 +261,7 @@ dailyNetRetPortfolioTT = TT;
 dailyNetRetPortfolioTT.Variables = dailyNetRetPortfolio;
 btResults.dailyNetRetPortfolioTT = dailyNetRetPortfolioTT;
 
-clearvars sodTotalAsset totalDailySellCostPortion eodTotalAsset dailyNetRetPortfolioTT
+clear sodTotalAsset totalDailySellCostPortion eodTotalAsset dailyNetRetPortfolioTT
 
 % equityCurvePortfolio
 equityCurvePortfolio = ret2tick (dailyNetRetPortfolio);
@@ -284,7 +284,7 @@ equityCurvePortfolioTT = TT;
 equityCurvePortfolioTT.Variables = equityCurvePortfolio;
 btResults.equityCurvePortfolioTT = equityCurvePortfolioTT;
 
-clearvars nSignalDaily dailyNetRetPortfolio equityCurvePortfolioTT
+clear nSignalDaily dailyNetRetPortfolio equityCurvePortfolioTT
 
 %================================================================================
 
@@ -295,7 +295,7 @@ dailyNetRetPerSym = (eodInvestedCapitalPerSym ./ sodInvestedCapitalPerSym) - 1 ;
 dailyNetRetPerSym(isnan(dailyNetRetPerSym)) = 0;
 dailyNetRetPerSym(isinf(dailyNetRetPerSym)) = 0;
 
-clearvars sodInvestedCapitalPerSym eodInvestedCapitalPerSym eodPrevRemainPortion
+clear sodInvestedCapitalPerSym eodInvestedCapitalPerSym eodPrevRemainPortion
 
 %================================================================================
 
@@ -316,7 +316,7 @@ dailyNetRetPerSymTT.Variables = dailyNetRetPerSym;
 dailyNetRetPerSymTT.Properties.VariableNames = symbols;
 btResults.dailyNetRetPerSymTT = dailyNetRetPerSymTT;
 
-clearvars dailyNetRetPerSymTT
+clear dailyNetRetPerSymTT
 
 % equityCurvePerSym
 equityCurvePerSym = ret2tick(dailyNetRetPerSym);
@@ -326,7 +326,7 @@ equityCurvePerSymTT.Variables = equityCurvePerSym;
 equityCurvePerSymTT.Properties.VariableNames = symbols;
 btResults.equityCurvePerSymTT = equityCurvePerSymTT;
 
-clearvars equityCurvePerSym equityCurvePerSymTT symbols
+clear equityCurvePerSym equityCurvePerSymTT symbols
 
 %================================================================================
 
@@ -337,7 +337,7 @@ totalDailyBuyCost = DailyBuyCost .* equityCurvePortfolio;
 totalBuyCost = sum(totalDailyBuyCost) ;
 btResults.totalBuyCost = totalBuyCost;
 
-clearvars DailyBuyCost totalDailyBuyCost totalBuyCost
+clear DailyBuyCost totalDailyBuyCost totalBuyCost
 
 % totalSellCost
 sellCostPortion;
@@ -350,8 +350,8 @@ btResults.totalSellCost = totalSellCost;
 totalSlippageCost = totalSlippageCostOfSodNetBuyPortion + totalSlippageCostOfGrossSellPortion ;
 btResults.totalSlippageCost = totalSlippageCost;
 
-clearvars sodNetBuyPortion equityCurvePortfolio sellCostPortion dailySellCost 
-clearvars totalDailySellCost totalSellCost totalSlippageCost
+clear sodNetBuyPortion equityCurvePortfolio sellCostPortion dailySellCost 
+clear totalDailySellCost totalSellCost totalSlippageCost
 %================================================================================
 
 % TODO summary statistics

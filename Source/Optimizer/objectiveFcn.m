@@ -16,17 +16,17 @@ function Fval = objectiveFcn (tradingSignalParam, dataInputBT, paramSetWFA)
     
     % generate signal
     tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInputBT);
-    clearvars tradingSignalParam
+    clear tradingSignalParam
     
     % backtest the signal against the price
     tradeSignalInput = tradingSignalOut;
     resultStruct = btEngineVectFcn(dataInputBT, tradeSignalInput, paramSetWFA);
-    clearvars dataInputBT tradeSignalInput tradingSignalOut paramSetWFA
+    clear dataInputBT tradeSignalInput tradingSignalOut paramSetWFA
     
     % calculate equityCurve at for the evaluation
     equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;
     equityCurvePortfolioVar = equityCurvePortfolioVar_raw(end-optimLookbackStep: end);
-    clearvars equityCurvePortfolioVar_raw resultStruct
+    clear equityCurvePortfolioVar_raw resultStruct
 
     % % calcluate return for the given  optimLookbackWindow
     startOptimPortValue = equityCurvePortfolioVar(1);

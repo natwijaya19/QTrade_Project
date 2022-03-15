@@ -1,9 +1,9 @@
 %% Start
-disp("===============================START=====================================")
-
 clear
 close all
 clc
+
+disp("===============================START=====================================")
 
 %% Load the market data
 yahooDataSetUp = YahooDataSetUp;
@@ -31,9 +31,9 @@ end
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=18, maxFcnEval=50)
+paramSetWFA = setUpWFAParam(marketData, nWalk=14)
 
-clearvars marketData dataInputPreSelect
+clear marketData dataInputPreSelect
 
 %% runWFA
 tic

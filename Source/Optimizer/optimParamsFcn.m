@@ -69,8 +69,14 @@ options = optimoptions('surrogateopt','PlotFcn',"surrogateoptplot", ...
 %% call surrogateopt to solve the problem
 [sol,fval,exitflag,output] = surrogateopt(F,LB,UB,intConst,options) ;
 
+disp("exitflag: ",string(exitflag));
+
 %% put UB into tradingSignalParam if FVal < minPortfolioReturn
-if fval <= -(minPortRet)
+
+fvalCriteria = fval <= -(minPortRet);
+exitflagCriteria = exitflag~=0;
+validIF = and(fvalCriteria, exitflagCriteria);
+if validIF
     optimizedTradingSignalParam = sol ;
 else
     optimizedTradingSignalParam = UB ;

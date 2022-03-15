@@ -15,13 +15,11 @@ matFileSetUp.path = pwd;
 marketData = MarketData (yahooDataSetUp, spreadSheetSetUp, matFileSetUp);
 marketData = marketData.loadDataFromMatFile;
 marketData = marketData.loadSymbolMCapRef;
-marketData = marketData.classifyMktCap;
 
-marketData = struct(marketData);
 dataInputPreSelect = marketData.priceVolumeData;
 
 % prepare data for only within the target time period
-startDate = datetime("01-Jan-2010", InputFormat="dd-MMM-uuuu");
+startDate = datetime("01-Jan-2014", InputFormat="dd-MMM-uuuu");
 endDate = datetime("31-Mar-2021", InputFormat="dd-MMM-uuuu");
 
 dataInput = cell(1,numel(dataInputPreSelect));
@@ -29,11 +27,15 @@ for dataIdx = 1: numel(dataInputPreSelect)
     dataInput{dataIdx} = dataInputPreSelect{dataIdx}(startDate:endDate,:);
 end
 
+marketData.priceVolumeData = dataInput;
+marketData = marketData.classifyMktCap;
+marketData = struct(marketData);
+
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=14)
+paramSetWFA = setUpWFAParam(marketData, nWalk=8)
 
-clear marketData dataInputPreSelect
+clear dataInputPreSelect
 
 %% runWFA
 tic

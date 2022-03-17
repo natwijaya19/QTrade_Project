@@ -35,7 +35,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=16, maxFcnEval=120)
+paramSetWFA = setUpWFAParam(marketData, nWalk=18, maxFcnEval=120)
 
 clear dataInputPreSelect
 

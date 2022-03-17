@@ -37,7 +37,7 @@ marketData = struct(marketData);
 
 paramSetWFA = setUpWFAParam(marketData, nWalk=18, maxFcnEval=120)
 
-clear dataInputPreSelect
+clear dataInputPreSelect marketData
 
 %% runWFA
 tic

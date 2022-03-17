@@ -97,7 +97,7 @@ nSignalDaily = sum(signalVar,2);
 %------------------------------------------------------------------------
 
 % start of day (SOD): calclate max capital allocation to be invested and cash
-maxCapAllocPerSym;
+% maxCapAllocPerSym;
 capAlloc = ones(numel(nSignalDaily),1);
 capAlloc = capAlloc ./ nSignalDaily;
 capAlloc(isinf(capAlloc)) = 0;
@@ -114,7 +114,7 @@ capAllocPerSym = signalVar .* capAlloc;
 
 sodTotalAsset = ones(numel(nSignalDaily),1);
 sodInvestedCapitalPerSym = capAllocPerSym;
-sodTotalInvestedCapital = sum(sodInvestedCapitalPerSym,2);
+% sodTotalInvestedCapital = sum(sodInvestedCapitalPerSym,2);
 sodCash = sodTotalAsset - sum(sodInvestedCapitalPerSym,2);
 
 clear sodTotalInvestedCapital
@@ -150,8 +150,8 @@ clear capAlloc capAllocPerSym buySellPortion
 %% calculate net invested value from buy portion at the end of day eodNetBuyPortion
 % sodGrossBuyPortion will experience the effect of buyCost,
 % dailyRet (closeToClosePriceRet) and slippageCost (closeToOpenPriceRet)
-buyCost;
-sodGrossBuyPortion;
+% buyCost;
+% sodGrossBuyPortion;
 
 % sodGrossBuyPortion contain both buyCostPortion and sodNetBuyPortion
 sodNetBuyPortion = sodGrossBuyPortion ./ (1+buyCost);
@@ -187,7 +187,7 @@ totalSlippageCostOfSodNetBuyPortion = sum(dailySlippageCostOfSodNetBuyPortion);
 
 %% calculate net invested value at the end of day from prevRemainPortion.
 % prevRemainPortion will only have the effect of dailyRet (closeToClosePriceRet)
-sodPrevRemainPortion;
+% sodPrevRemainPortion;
 
 % closeToClosePriceRet is dailyRet without slippage
 closeToClosePriceRet = zeros(size(signalVar));
@@ -203,8 +203,8 @@ clear sodPrevRemainPortion closeToClosePriceRet
 %% calculate sellCostPortion from sodGrossSellPortion. This portion will
 % have the effect of slippage and sellCost. sellCost is the only cost will be
 % included into the eod asset calc.
-sodGrossSellPortion;
-sellCost;
+% sodGrossSellPortion;
+% sellCost;
 
 % slippageCost
 % slippage priceRet from last trading day close price to open price in the start of day
@@ -236,7 +236,7 @@ clear eodInvestedCapital
 
 % calculate total asset = invested capital + cash at the end of day (EOD)
 eodCash = sodCash;
-totalDailySellCostPortion;
+% totalDailySellCostPortion;
 eodTotalAsset = eodCash + eodTotalInvestedCapital - totalDailySellCostPortion;
 
 clear eodTotalInvestedCapital
@@ -331,7 +331,7 @@ clear equityCurvePerSym equityCurvePerSymTT symbols
 %================================================================================
 
 % totalBuyCost
-buyCostPortion;
+% buyCostPortion;
 DailyBuyCost = sum(buyCostPortion,2);
 totalDailyBuyCost = DailyBuyCost .* equityCurvePortfolio;
 totalBuyCost = sum(totalDailyBuyCost) ;
@@ -340,7 +340,7 @@ btResults.totalBuyCost = totalBuyCost;
 clear DailyBuyCost totalDailyBuyCost totalBuyCost
 
 % totalSellCost
-sellCostPortion;
+% sellCostPortion;
 dailySellCost = sum(sellCostPortion,2);
 totalDailySellCost =  dailySellCost .* equityCurvePortfolio;
 totalSellCost = sum(totalDailySellCost);

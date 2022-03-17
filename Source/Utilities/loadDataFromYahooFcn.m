@@ -56,6 +56,7 @@ closePriceTT = dataTT;
 volumeTT = dataTT;
 
 % looping through all symbol
+close all;
 waitbarFig = waitbar(0, "Downloading data from yahoo");
 progressCounter = 1:25:nSymbols;
 
@@ -149,6 +150,6 @@ priceVolumeData;
 
 %% end of function    
 
-clearvars -except priceVolumeOut
+clearvars -except priceVolumeData indexIHSG
 
 end 

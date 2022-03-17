@@ -20,14 +20,19 @@ function [c, ceq] = nonLinearConstraintFcn (tradingSignalParam, dataInput, param
 
 %%
 % transfer input variables
-optimLookbackStep = paramSetWFA.optimLookbackStep;
-minSharpeRatio = paramSetWFA.minSharpeRatio;
-maxDDThreshold = paramSetWFA.maxDDThreshold;
-minPortRet = paramSetWFA.minPortRet;
-minDailyRetThreshold = paramSetWFA.minDailyRetThreshold;
-minLast20DRetThreshold = paramSetWFA.minLast20DRetThreshold ;
-minLast60DRetThreshold = paramSetWFA.minLast60DRetThreshold ;
-minLast200DRetThreshold = paramSetWFA.minLast200DRetThreshold ;
+optimLookbackStep           = paramSetWFA.optimLookbackStep;
+nstepTest                   = paramSetWFA.nstepTest;
+minSharpeRatio              = paramSetWFA.minSharpeRatio;
+maxDDThreshold              = paramSetWFA.maxDDThreshold;
+minPortRet                  = paramSetWFA.minPortRet;
+minDailyRetThreshold        = paramSetWFA.minDailyRetThreshold;
+minLast20DRetThreshold      = paramSetWFA.minLast20DRetThreshold ;
+minLast60DRetThreshold      = paramSetWFA.minLast60DRetThreshold ;
+minLast200DRetThreshold     = paramSetWFA.minLast200DRetThreshold ;
+minAvgDailyRet              = paramSetWFA.minAvgDailyRet;
+minAvg20DaysRet             = paramSetWFA.minAvg20DaysRet;
+minAvg60DaysRet             = paramSetWFA.minAvg60DaysRet;
+minNStepTestRet             = paramSetWFA.minNStepTestRet;
 
 % generate signal
 tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInput);
@@ -70,7 +75,7 @@ maxDD = -maxdrawdown(equityCurvePortfolioVar);
 dailyRet = tick2ret(equityCurvePortfolioVar);
 dailyRet(isnan(dailyRet)) = 0;
 DailyRetMin = min(dailyRet);
-clear dailyRet
+% clear dailyRet
 
 %==========================================================================
 
@@ -91,7 +96,7 @@ else
     Last20DRetMin = min(Last20DRet);
 
 end
-clear Last20DRet
+% clear Last20DRet
 
 %==========================================================================
 
@@ -111,7 +116,7 @@ else
     Last60DRetMin = min(Last60DRet);
 
 end
-clear Last60DRet
+% clear Last60DRet
 %==========================================================================
 
 %% Last 200 days return
@@ -132,7 +137,17 @@ else
 
 end
 
-clear equityCurvePortfolioVar Last200DRet
+% clear equityCurvePortfolioVar Last200DRet
+
+%==========================================================================
+
+
+%% minAvgRetConst
+avgDailyRet     = mean(dailyRet);
+avg20DaysRet    = mean(Last20DRet);
+avg60DaysRet    = mean(Last60DRet);
+
+nstepTestRet    = equityCurvePortfolioVar(end,:) ./ equityCurvePortfolioVar(end-nstepTest+1,:) ;
 
 %==========================================================================
 
@@ -141,10 +156,17 @@ c = [
     maxDDThreshold - maxDD;
     minSharpeRatio - sharpeRatio;
     minPortRet - cumPortfolioReturn;
+    
     minDailyRetThreshold - DailyRetMin;
     minLast20DRetThreshold - Last20DRetMin;
     minLast60DRetThreshold - Last60DRetMin;
     minLast200DRetThreshold - Last200DRetMin;
+
+    minAvgDailyRet - avgDailyRet;
+    minAvg20DaysRet - avg20DaysRet;
+    minAvg60DaysRet - avg60DaysRet;
+
+    minNStepTestRet - nstepTestRet;
     ];
 
 ceq = [];

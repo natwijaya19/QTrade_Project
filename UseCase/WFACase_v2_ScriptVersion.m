@@ -74,5 +74,13 @@ fileName = "packageWFAResults_Jan2020_to_Mar2021.mat";
 fullFileName = fullfile(path, folder,fileName);
 save(fullFileName, "packageWFAResults");
 
+%% save summary results to excel table
+path = pwd;
+folder = "DataOutput";
+fileName = "SummaryTable.xlsx";
+fullFileName = fullfile(path, folder, fileName);
+writetable(combinedWFAResults.summary, fullFileName);
+
+
 %% End
 disp("===============================END=====================================")

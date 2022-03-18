@@ -20,7 +20,7 @@ dataInputPreSelect = marketData.priceVolumeData;
 
 % prepare data for only within the target time period
 startDate = datetime("01-Jan-2014", InputFormat="dd-MMM-uuuu");
-endDate = datetime("1-Mar-2021", InputFormat="dd-MMM-uuuu");
+endDate = datetime("1-May-2023", InputFormat="dd-MMM-uuuu");
 
 dataInput = cell(1,numel(dataInputPreSelect));
 for dataIdx = 1: numel(dataInputPreSelect)
@@ -33,7 +33,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=18, maxFcnEval=120)
+paramSetWFA = setUpWFAParam(marketData, nWalk=50, maxFcnEval=180)
 
 clear dataInputPreSelect marketData
 

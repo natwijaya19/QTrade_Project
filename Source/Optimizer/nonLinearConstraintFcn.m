@@ -132,7 +132,7 @@ end
 nDays = 200;
 equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
 portCumRet = equityCurvePortVar;
-Last20DRet = equityCurvePortVar ;
+Last200DRet = equityCurvePortVar ;
 
 if numel (portCumRet) <= nDays
     Last200DRetMin = 0;
@@ -144,10 +144,9 @@ else
     Last200DRet (isnan(Last200DRet)) = 0 ;
     Last200DRet (isinf(Last200DRet)) = 0 ;
     Last200DRet  = Last200DRet (end-optimLookbackStep+1: end,:);
-    Last60DRetMin = min(Last200DRet);
+    Last200DRetMin = min(Last200DRet);
 
 end
-
 
 % clear equityCurvePortfolioVar Last200DRet
 

@@ -20,7 +20,7 @@ dataInputPreSelect = marketData.priceVolumeData;
 
 % prepare data for only within the target time period
 startDate   = datetime("01-Jan-2014", InputFormat="dd-MMM-uuuu");
-endDate     = datetime("1-Mar-2021", InputFormat="dd-MMM-uuuu");    
+endDate     = datetime("1-Mar-2023", InputFormat="dd-MMM-uuuu");    
 
 dataInput = cell(1,numel(dataInputPreSelect));
 for dataIdx = 1: numel(dataInputPreSelect)
@@ -29,13 +29,18 @@ end
 
 marketData.priceVolumeData = dataInput;
 marketData = marketData.classifyMktCap;
+
+
+%% 
 marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=30, maxFcnEval=180)
+paramSetWFA = setUpWFAParam(marketData, nWalk=4, maxFcnEval=120, nstepTest=10, minNStepTestRet=1.05)
 
-clear dataInputPreSelect marketData
+% uniqMktCap = paramSetWFA.uniqMktCap;
+% paramSetWFA.uniqMktCap = uniqMktCap(2);
+% clear dataInputPreSelect marketData
 
 %% runWFA
 tic
@@ -70,7 +75,7 @@ packageWFAResults.combinedWFAResults    = combinedWFAResults;
 % save packageWFAResults
 path        = pwd;
 folder      = "DataOutput";
-fileName    = "packageWFAResults_Jan2019_to_Mar2021.mat";
+fileName    = "packageWFAResults_Jan2021_to_Mar2022.mat";
 fullFileName = fullfile(path, folder,fileName);
 save(fullFileName, "packageWFAResults");
 

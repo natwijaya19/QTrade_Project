@@ -38,15 +38,18 @@ x = paramInput ; % TODO remove comment when final
 
 volumeMATreshold = x(1)/100 ; % input #1
 volumeMALookback = x(2) ; % input #2
-valueThreshold = x(3)*10^7 ; % input #3 in Rp hundreds million
+valueThreshold = x(3)*10^9 ; % input #3 in Rp hundreds millions
 valueLookback = x(4) ; % input #4 nDays
 volumeValueBufferDays = x(5) ; % input #5
 priceRetLowCloseThresh = x(6)/100 ; % input #6
-priceMAThreshold = x(7)/100 ; % input #7
-priceMALookback = x(8) ; % input #8
-priceVolumeValueBufferDays = x(9) ; % input #9
-cutLossLookback = x(10) ; % input #10
-cutLossPct = x(11)/100 ; % input #11
+priceRetLowCloseLookback = x(7)-1; % input #7
+priceMAThreshold = x(8)/100 ; % input #8
+priceMALookback = x(9) ; % input #9
+priceVolumeValueBufferDays = x(10) ; % input #10
+cutLossLookback = x(11) ; % input #11
+cutLossPct = x(12)/100 ; % input #12
+
+
 
 %=======================================================================
 
@@ -110,11 +113,14 @@ clear volumeValueSignal volumeSignal valueSignal
 
 %% Signal price return from low to close
 priceRetLowCloseThresh;
+priceRetLowCloseLookback;
 
 lowPriceTT = dataInput{3};
 closePriceTT = dataInput{4};
 
-priceRetLowClose = (closePriceTT.Variables ./ lowPriceTT.Variables) -1 ;
+shiftedLlowPriceTT = lowPriceTT;
+shiftedLlowPriceTT.Variables = backShiftFcn(lowPriceTT.Variables, priceRetLowCloseLookback); 
+priceRetLowClose = (closePriceTT.Variables ./ shiftedLlowPriceTT.Variables) -1 ;
 priceRetLowClose(isnan(priceRetLowClose)) = 0;
 priceRetLowClose(isinf(priceRetLowClose)) = 0;
 

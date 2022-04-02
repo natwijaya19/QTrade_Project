@@ -26,14 +26,16 @@ arguments
     inputArgs.maxFcnEval = 300; % must be multiplication of 6 >> 6 cores CPU
 
     % nlConstParam
+    inputArgs.maxLookbackConst                              = 250; 
     inputArgs.maxDDThreshold {mustBeNumeric}                = -20/100;
     inputArgs.minSharpeRatio {mustBeNumeric}                = 1.5;
     inputArgs.minPortRet {mustBeNumeric}                    = 1.1;
+
     inputArgs.minDailyRetThreshold {mustBeNumeric}          = -25/100;
     inputArgs.minLast20DRetThreshold {mustBeNumeric}        = -15/100;
     inputArgs.minLast60DRetThreshold {mustBeNumeric}        = -5/100;
     inputArgs.minLast200DRetThreshold {mustBeNumeric}       = 0/100;
-    inputArgs.maxLookbackConst                              = 250; 
+    
     inputArgs.minAvgDailyRet                                = 0.5/100;
     inputArgs.minAvg20DaysRet                               = 5/100;
     inputArgs.minAvg60DaysRet                               = 5/100;

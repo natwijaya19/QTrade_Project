@@ -30,13 +30,11 @@ end
 marketData.priceVolumeData = dataInput;
 marketData = marketData.classifyMktCap;
 
-
-%% 
 marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=4, maxFcnEval=120, nstepTest=10, minNStepTestRet=1.05)
+paramSetWFA = setUpWFAParam(marketData, nWalk=30, maxFcnEval=120)
 
 % uniqMktCap = paramSetWFA.uniqMktCap;
 % paramSetWFA.uniqMktCap = uniqMktCap(2);

@@ -60,7 +60,7 @@ close all;
 waitbarFig = waitbar(0, "Downloading data from yahoo");
 progressCounter = 1:25:nSymbols;
 
-for Idx = 1: nSymbols
+parfor Idx = 1: nSymbols
     waitbar(Idx/nSymbols, waitbarFig, "Downloading data from yahoo");
     symi = strcat(symbols(Idx), ".JK");
 

@@ -6,23 +6,21 @@ clc
 disp("===============================START=====================================")
 
 %% Load the market data
-yahooDataSetUp = YahooDataSetUp;
+yahooDataSetUp      = YahooDataSetUp;
 yahooDataSetUp.path = pwd;
-spreadSheetSetUp = SpreadSheetSetUp;
-matFileSetUp = MatFileSetUp;
-matFileSetUp.path = pwd;
+spreadSheetSetUp    = SpreadSheetSetUp;
+matFileSetUp        = MatFileSetUp;
+matFileSetUp.path   = pwd;
 
 marketData = MarketData (yahooDataSetUp, spreadSheetSetUp, matFileSetUp);
 marketData = marketData.loadSymbolMCapRef;
 marketData = marketData.loadDataFromMatFile;
-% marketd 
 
-%% 
 dataInputPreSelect = marketData.priceVolumeData;
 
 % prepare data for only within the target time period
-startDate = datetime("01-Jan-2014", InputFormat="dd-MMM-uuuu");
-endDate = datetime("1-Mar-2021", InputFormat="dd-MMM-uuuu");
+startDate   = datetime("01-Jan-2014", InputFormat="dd-MMM-uuuu");
+endDate     = datetime("1-Mar-2021", InputFormat="dd-MMM-uuuu");    
 
 dataInput = cell(1,numel(dataInputPreSelect));
 for dataIdx = 1: numel(dataInputPreSelect)
@@ -35,7 +33,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=18, maxFcnEval=120)
+paramSetWFA = setUpWFAParam(marketData, nWalk=30, maxFcnEval=180)
 
 clear dataInputPreSelect marketData
 
@@ -45,10 +43,10 @@ mCapWalkResults = runMCapWalk(dataInput, paramSetWFA);
 runMCapWalkTime = toc
 
 % save mCapWalkResults
-path = pwd;
-folder = "DataOutput";
-fileName = "mCapWalkResults.mat";
-fullFileName = fullfile(path, folder,fileName);
+path            = pwd;
+folder          = "DataOutput";
+fileName        = "mCapWalkResults.mat";
+fullFileName    = fullfile(path, folder,fileName);
 save(fullFileName, "mCapWalkResults");
 
 %% show performance evaluation
@@ -70,16 +68,16 @@ packageWFAResults.upSmallCap            = mCapWalkResults{6};
 packageWFAResults.combinedWFAResults    = combinedWFAResults;
 
 % save packageWFAResults
-path = pwd;
-folder = "DataOutput";
-fileName = "packageWFAResults_Jan2020_to_Mar2021.mat";
+path        = pwd;
+folder      = "DataOutput";
+fileName    = "packageWFAResults_Jan2019_to_Mar2021.mat";
 fullFileName = fullfile(path, folder,fileName);
 save(fullFileName, "packageWFAResults");
 
 %% save summary results to excel table
-path = pwd;
-folder = "DataOutput";
-fileName = "SummaryTable.xlsx";
+path        = pwd;
+folder      = "DataOutput";
+fileName    = "SummaryTable.xlsx";
 fullFileName = fullfile(path, folder, fileName);
 writetable(combinedWFAResults.summary, fullFileName);
 

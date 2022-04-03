@@ -38,6 +38,7 @@ classdef MarketData
         % data properties
         priceVolumeData
         nDay {mustBeInteger, mustBePositive} = 250*6
+        mktCapMALookback = 100;
 
     end
 
@@ -263,6 +264,9 @@ function marketCapCategory = calcMktCapCategoryFcn(marketData)
 
 % prepare the dataInput
 marketCap = marketData.marketCap;
+mktCapMALookback = marketData.mktCapMALookback;
+
+mktCapCategMA = movmean (marketCap.Variables, [mktCapMALookback 0], 1, 'omitnan');
 priceVolumeData = marketData.priceVolumeData;
 marketCapRangeRef = marketData.marketCapRangeRef;
 volume = priceVolumeData{5};
@@ -276,9 +280,9 @@ marketCapCategory  = timetable('Size', [numel(timeCol), numel(symbols)],...
 marketCapRangeRef = sortrows(marketCapRangeRef, "UB","ascend");
 UB = marketCapRangeRef.UB;
 edges = sort([UB(:); 0 ],"ascend");
-category = (marketCapRangeRef.CapCategory) ;
+category = (marketCapRangeRef.CapCateg) ;
 
-marketCapCategoryVar = discretize(marketCap.Variables, edges,...
+marketCapCategoryVar = discretize(mktCapCategMA, edges,...
     'categorical', category, 'IncludedEdge','left');
 
 % wrap up the output

@@ -44,17 +44,15 @@ clear tradingSignalOut
 resultStruct = btEngineVectFcn(dataInput, tradingSignalIn,paramSetWFA);
 clear dataInput tradingSignalIn paramSetWFA
 
-% calculate equityCurve at for the evaluation
-equityCurvePortfolioVar_raw = resultStruct.equityCurvePortfolioTT.Variables;
-equityCurvePortfolioVar = equityCurvePortfolioVar_raw(end-optimLookbackStep+1: end);
-equityCurvePortfolioVar = string(equityCurvePortfolioVar);
-equityCurvePortfolioVar = double(equityCurvePortfolioVar);
-equityCurvePortfolioVar = fillmissing(equityCurvePortfolioVar, "previous");
-clear equityCurvePortfolioVar_raw
-
 %% calcluate return for the given  optimLookbackWindow minPortfolioReturn
-startOptimPortValue = equityCurvePortfolioVar(1);
-endOptimPortValue = equityCurvePortfolioVar(end);
+equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
+equityCurvePortVar = equityCurvePortVar(end-optimLookbackStep+1: end,:);
+equityCurvePortVar = string(equityCurvePortVar);
+equityCurvePortVar = double(equityCurvePortVar);
+equityCurvePortVar = fillmissing(equityCurvePortVar, "previous");
+
+startOptimPortValue = equityCurvePortVar(1);
+endOptimPortValue = equityCurvePortVar(end);
 cumPortfolioReturn = endOptimPortValue / startOptimPortValue;
 cumPortfolioReturn(isnan(cumPortfolioReturn)) = 0;
 cumPortfolioReturn(isinf(cumPortfolioReturn)) = 0;
@@ -62,17 +60,22 @@ clear endOptimPortValue startOptimPortValue
 
 %% Risk-reward ratios
 risklessAssetRet = 0 ;
-dailyNetRetPortfolioTT = resultStruct.dailyNetRetPortfolioTT;
-sharpeRatio = sharpe(dailyNetRetPortfolioTT.Variables, risklessAssetRet) *sqrt (252);
+dailyNetRetPort = resultStruct.dailyNetRetPortfolioTT.Variables;
+dailyNetRetPort  = dailyNetRetPort(end-optimLookbackStep+1: end,:);
+sharpeRatio = sharpe(dailyNetRetPort, risklessAssetRet) *sqrt (252);
 sharpeRatio(isnan(sharpeRatio)) = 0 ;
 sharpeRatio(isinf(sharpeRatio)) = 0 ;
-clear resultStruct dailyNetRetPortfolioTT
+clear dailyNetRetPortfolioTT
 
 %% calculate maxDD for maxDDThreshold
-maxDD = -maxdrawdown(equityCurvePortfolioVar);
+equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
+equityCurvePortVar = equityCurvePortVar(end-optimLookbackStep+1: end,:);
+maxDD = -maxdrawdown(equityCurvePortVar);
 
 %% calculate dailyRet for minDailyRetThreshold
-dailyRet = tick2ret(equityCurvePortfolioVar);
+equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
+dailyRet = tick2ret(equityCurvePortVar);
+dailyRet = dailyRet(end-optimLookbackStep+1: end,:);
 dailyRet(isnan(dailyRet)) = 0;
 DailyRetMin = min(dailyRet);
 % clear dailyRet
@@ -81,18 +84,20 @@ DailyRetMin = min(dailyRet);
 
 %% Last 20 days return
 nDays = 20;
-portCumRet = equityCurvePortfolioVar;
-Last20DRet = portCumRet ;
+equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
+portCumRet = equityCurvePortVar;
+Last20DRet = equityCurvePortVar ;
 
 if numel (portCumRet) <= nDays
     Last20DRetMin = 0;
 else
 
     Last20DRet(nDays+1:end,:) = (portCumRet(nDays+1:end,:) ./ portCumRet(1:end-nDays,:))-1;
-    Last20DRet(1:nDays,:) = 0 ;
+    Last20DRet(1:nDays,:) = [] ;
     Last20DRet (isnan(Last20DRet)) = 0 ;
     Last20DRet (isnan(Last20DRet)) = 0 ;
     Last20DRet (isinf(Last20DRet)) = 0 ;
+    Last20DRet  = Last20DRet (end-optimLookbackStep+1: end,:);
     Last20DRetMin = min(Last20DRet);
 
 end
@@ -102,37 +107,43 @@ end
 
 %% Last 20 days return
 nDays = 60;
-portCumRet = equityCurvePortfolioVar;
-Last60DRet = portCumRet ;
+equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
+portCumRet = equityCurvePortVar;
+Last60DRet = equityCurvePortVar ;
 
 if numel (portCumRet) <= nDays
     Last60DRetMin = 0;
 else
+
     Last60DRet(nDays+1:end,:) = (portCumRet(nDays+1:end,:) ./ portCumRet(1:end-nDays,:))-1;
-    Last60DRet(1:nDays,:) = 0 ;
+    Last60DRet(1:nDays,:) = [] ;
     Last60DRet (isnan(Last60DRet)) = 0 ;
     Last60DRet (isnan(Last60DRet)) = 0 ;
     Last60DRet (isinf(Last60DRet)) = 0 ;
+    Last60DRet  = Last60DRet (end-optimLookbackStep+1: end,:);
     Last60DRetMin = min(Last60DRet);
 
 end
+
 % clear Last60DRet
 %==========================================================================
 
 %% Last 200 days return
 nDays = 200;
-portCumRet = equityCurvePortfolioVar;
-Last200DRet = portCumRet ;
+equityCurvePortVar = resultStruct.equityCurvePortfolioTT.Variables;
+portCumRet = equityCurvePortVar;
+Last200DRet = equityCurvePortVar ;
 
 if numel (portCumRet) <= nDays
     Last200DRetMin = 0;
-
 else
+
     Last200DRet(nDays+1:end,:) = (portCumRet(nDays+1:end,:) ./ portCumRet(1:end-nDays,:))-1;
-    Last200DRet(1:nDays,:) = 0 ;
+    Last200DRet(1:nDays,:) = [] ;
     Last200DRet (isnan(Last200DRet)) = 0 ;
     Last200DRet (isnan(Last200DRet)) = 0 ;
     Last200DRet (isinf(Last200DRet)) = 0 ;
+    Last200DRet  = Last200DRet (end-optimLookbackStep+1: end,:);
     Last200DRetMin = min(Last200DRet);
 
 end
@@ -145,9 +156,9 @@ end
 %% minAvgRetConst
 avgDailyRet     = mean(dailyRet);
 avg20DaysRet    = mean(Last20DRet);
-avg60DaysRet    = mean(Last60DRet);
+avg60DaysRet    = mean(Last200DRet);
 
-nstepTestRet    = equityCurvePortfolioVar(end,:) ./ equityCurvePortfolioVar(end-nstepTest+1,:) ;
+nstepTestRet    = equityCurvePortVar(end,:) ./ equityCurvePortVar(end-nstepTest+1,:) ;
 
 %==========================================================================
 

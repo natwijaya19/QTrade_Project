@@ -11,8 +11,6 @@ function [priceVolumeData, indexIHSG] = loadDataFromYahooFcn(symbols, startDate,
 %   - interval >> interval day period
 %   - maxRetry >> for error handling
 
-
-
 %-----------------------------------------------------------------------------------------------
 
 
@@ -38,31 +36,31 @@ TT.Variables = nan(nRowSampleData, nColSampleData);
 
 nSymbols = numel(symbols);
 nRow = nRowSampleData;
-sz = [nRow, nSymbols];
-varSample = zeros(nRow,nSymbols);
-variableTypes = {'double'};
-varName = symbols;
-
-
-dataTT = timetable('Size', [nRow,1], 'VariableTypes', variableTypes , 'RowTimes', timeCol, ...
-    'VariableNames', "preallocation");
-
+% sz = [nRow, nSymbols];
+% varSample = zeros(nRow,nSymbols);
+variableTypes = repmat({'double'}, 1,nSymbols);
+varName = symbols';
 
 % preallocation for each price volume data
-openPriceTT = dataTT;
-highPriceTT = dataTT;
-lowPriceTT = dataTT;
-closePriceTT = dataTT;
-volumeTT = dataTT;
+openPriceTT = timetable('Size', [nRow,nSymbols], 'VariableTypes', variableTypes , 'RowTimes', timeCol, ...
+    'VariableNames', varName);
+highPriceTT = openPriceTT;
+lowPriceTT = openPriceTT;
+closePriceTT = openPriceTT;
+volumeTT = openPriceTT;
 
 % looping through all symbol
 close all;
-waitbarFig = waitbar(0, "Downloading data from yahoo");
-progressCounter = 1:25:nSymbols;
+% waitbarFig = waitbar(0, "Downloading data from yahoo");
+progressCounter = 1:5:nSymbols;
 
-for Idx = 1: nSymbols
-    waitbar(Idx/nSymbols, waitbarFig, "Downloading data from yahoo");
+parfor Idx = 1: nSymbols
+%     waitbar(Idx/nSymbols, waitbarFig, "Downloading data from yahoo");
     symi = strcat(symbols(Idx), ".JK");
+
+    % preallocate helper
+    dataTT = timetable('Size', [nRow,1], 'VariableTypes', {'double'} , 'RowTimes', timeCol, ...
+    'VariableNames', "preallocation");
 
     % progressCounter
     if ismember(Idx, progressCounter)
@@ -73,28 +71,17 @@ for Idx = 1: nSymbols
     if isempty(dataIdx)
         dataIdx = TT;
     end
-    % Synchronize price and volume data
-    openPriceTT = synchronize (openPriceTT, dataIdx(:,1)) ;
-    highPriceTT = synchronize (highPriceTT, dataIdx(:,2));
-    lowPriceTT = synchronize (lowPriceTT, dataIdx(:,3));
-    closePriceTT = synchronize (closePriceTT, dataIdx(:,4));
-    volumeTT = synchronize (volumeTT, dataIdx(:,6));
+    dataSynced = synchronize(dataTT, dataIdx);
+    dataSynced.preallocation = [];
 
-    % replace name with symi
-    openPriceTT.Properties.VariableNames(end) = symi;
-    highPriceTT.Properties.VariableNames(end) = symi;
-    lowPriceTT.Properties.VariableNames(end) = symi;
-    closePriceTT.Properties.VariableNames(end) = symi;
-    volumeTT.Properties.VariableNames(end) = symi;
+    % Put data to each variable timetable
+    openPriceTT(:,Idx).Variables = dataSynced(:,1).Variables ;
+    highPriceTT(:,Idx).Variables = dataSynced(:,2).Variables;
+    lowPriceTT(:,Idx).Variables = dataSynced(:,3).Variables;
+    closePriceTT(:,Idx).Variables = dataSynced(:,4).Variables;
+    volumeTT(:,Idx).Variables = dataSynced(:,6).Variables;
 
 end
-
-% remove preallocation column
-openPriceTT.preallocation = [];
-highPriceTT.preallocation = [];
-lowPriceTT.preallocation = [];
-closePriceTT.preallocation = [];
-volumeTT.preallocation = [];
 
 
 % load indexIHSG
@@ -114,11 +101,11 @@ lowPriceVar = lowPriceTT.Properties.VariableNames;
 closePriceVar = closePriceTT.Properties.VariableNames;
 volumeVar = volumeTT.Properties.VariableNames;
 
-openPriceVar = strrep(string(openPriceVar), ".JK", "_open");
-highPriceVar  = strrep(string(highPriceVar), ".JK", "_high");
-lowPriceVar = strrep(string(lowPriceVar), ".JK", "_low");
-closePriceVar = strrep(string(closePriceVar), ".JK", "_close");
-volumeVar = strrep(string(volumeVar), ".JK", "_volume");
+openPriceVar = strcat(string(openPriceVar), "_open");
+highPriceVar  = strcat(string(openPriceVar), "_high");
+lowPriceVar = strcat(string(openPriceVar), "_low");
+closePriceVar = strcat(string(openPriceVar), "_close");
+volumeVar = strcat(string(openPriceVar), "_volume");
 
 openPriceTT.Properties.VariableNames = openPriceVar ;
 highPriceTT.Properties.VariableNames = highPriceVar ;
@@ -143,8 +130,8 @@ priceVolumeData{4} = closePrice;
 priceVolumeData{5} = volume;
 
 % output
-indexIHSG;
-priceVolumeData;
+% indexIHSG;
+% priceVolumeData;
 
 %=========================================================================
 

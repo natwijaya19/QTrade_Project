@@ -39,7 +39,7 @@ x = paramInput ; % TODO remove comment when final
 
 volumeMATreshold = x(1)/100 ; % input #1
 volumeMALookback = x(2) ; % input #2
-valueThreshold = x(3)*10^9 ; % input #3 in Rp hundreds millions
+valueThreshold = x(3)*10^9 ; % input #3 in Rp Bn
 valueMALookback = x(4) ; % input #4 nDays`
 volumeValueBufferDays = x(5) ; % input #5  
 priceRetLowCloseThresh = x(6)/100 ; % input #6
@@ -207,7 +207,7 @@ finalSignal = priceBufferSignal .* cutlossSignal .* volumeValueBufferSignal;
 % barFig = bar(signal);
 % title("finalSignal")
 
-clear priceBufferSignal cutlossSignal
+clear priceBufferSignal cutlossSignal volumeValueBufferSignal
 
 %=======================================================================
 

@@ -10,7 +10,6 @@ loadYahooTime = toc;
 %% 
 loadYahooTime/60
 
-loadDataFromYahooFcn
 
 %% 
 priceVolumeParfor = marketData.priceVolumeData;

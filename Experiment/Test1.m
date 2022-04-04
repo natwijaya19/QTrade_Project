@@ -8,13 +8,18 @@ tic
 marketData = marketData.loadDataFromYahoo;
 loadYahooTime = toc;
 %% 
+loadYahooTime/60
+
+%% 
 priceVolumeParfor = marketData.priceVolumeData;
 
 priceVolumeParfor = cleanDataFcn(priceVolumeParfor);
+priceVolumeParforVarNames = priceVolumeParfor{1}.Properties.VariableNames;
 %%
 priceVolumeFor = load("DataInput\PriceVolumeInput2010to2022Raw.mat");
 priceVolumeFor = struct2cell(priceVolumeFor);
 priceVolumeFor = cleanDataFcn(priceVolumeFor');
+priceVolumeForVarNames = priceVolumeFor{1}.Properties.VariableNames;
 
 %% compare
 
@@ -24,15 +29,15 @@ symbols = marketData.symbols;
 
 priceVolData = cell(1,5);
 
-for idx = 1: numel(priceVolData)
+% for idx = 1: numel(priceVolData)
     idx = 1;
-    priceVolumeForVar = priceVolumeFor{1,idx}(startDate:endDate,:).Variables ;
-    priceVolumeParforVar = priceVolumeParfor{1,idx}(startDate:endDate,:).Variables;
-    dataVar = priceVolumeParforVar == priceVolumeForVar;
+    priceVolumeForCheck = priceVolumeFor{1,idx}(startDate:endDate,:);
+    priceVolumeParforVarCheck = priceVolumeParfor{1,idx}(startDate:endDate,:);
+    dataVar = priceVolumeParforVarCheck.Variables  == priceVolumeForCheck.Variables ;
     dataTT = priceVolumeFor{1,idx}(startDate:endDate,:);
     dataTT.Variables = dataVar;
     priceVolData{1,idx} = dataTT;
-end
+% end
 
 
 

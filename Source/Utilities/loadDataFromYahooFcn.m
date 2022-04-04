@@ -11,8 +11,6 @@ function [priceVolumeData, indexIHSG] = loadDataFromYahooFcn(symbols, startDate,
 %   - interval >> interval day period
 %   - maxRetry >> for error handling
 
-
-
 %-----------------------------------------------------------------------------------------------
 
 
@@ -54,7 +52,7 @@ volumeTT = openPriceTT;
 % looping through all symbol
 close all;
 % waitbarFig = waitbar(0, "Downloading data from yahoo");
-progressCounter = 1:25:nSymbols;
+progressCounter = 1:5:nSymbols;
 
 parfor Idx = 1: nSymbols
 %     waitbar(Idx/nSymbols, waitbarFig, "Downloading data from yahoo");
@@ -83,12 +81,21 @@ parfor Idx = 1: nSymbols
     closePriceTT(:,Idx).Variables = dataSynced(:,4).Variables;
     volumeTT(:,Idx).Variables = dataSynced(:,6).Variables;
 
-    % Put the varName
-    openPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-    highPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-    lowPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-    closePriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-    volumeTT(:,Idx).Properties.VariableNames = symbols(Idx);
+%     % Put the varName
+%     varNameIdx = openPriceTT.Properties.VariableNames; 
+%     varNameIdx(Idx) = cellstr(symbols(Idx));
+% 
+%     openPriceTT.Properties.VariableNames = varNameIdx ;
+%     highPriceTT.Properties.VariableNames = varNameIdx ;
+%     lowPriceTT.Properties.VariableNames = varNameIdx ;
+%     closePriceTT.Properties.VariableNames = varNameIdx ;
+%     volumeTT.Properties.VariableNames = varNameIdx ;
+    
+%     openPriceTT(:,Idx).Properties.VariableNames = cellstr(symbols(Idx));
+%     highPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
+%     lowPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
+%     closePriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
+%     volumeTT(:,Idx).Properties.VariableNames = symbols(Idx);
 
 end
 

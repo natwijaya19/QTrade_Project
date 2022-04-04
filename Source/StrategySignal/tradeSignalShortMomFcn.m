@@ -20,15 +20,16 @@ end
 % x = [
 %     40  %1
 %     200 %2
-%     5   %3
+%     1   %3
 %     5   %4
 %     10  %5
-%     8   %6
-%     120 %7
-%     20  %8
-%     5   %9
-%     8   %10
-%     5   %11
+%     6   %6
+%     1   %7
+%     120 %8
+%     20  %9
+%     5   %10
+%     8   %11
+%     5   %12
 %     ];
 
 %% Transfer input values to each variables. All variables are converted from
@@ -39,13 +40,13 @@ x = paramInput ; % TODO remove comment when final
 volumeMATreshold = x(1)/100 ; % input #1
 volumeMALookback = x(2) ; % input #2
 valueThreshold = x(3)*10^9 ; % input #3 in Rp hundreds millions
-valueLookback = x(4) ; % input #4 nDays
-volumeValueBufferDays = x(5) ; % input #5
+valueMALookback = x(4) ; % input #4 nDays`
+volumeValueBufferDays = x(5) ; % input #5  
 priceRetLowCloseThresh = x(6)/100 ; % input #6
 priceRetLowCloseLookback = x(7)-1; % input #7
 priceMAThreshold = x(8)/100 ; % input #8
 priceMALookback = x(9) ; % input #9
-priceVolumeValueBufferDays = x(10) ; % input #10
+priceBufferDays = x(10) ; % input #10
 cutLossLookback = x(11) ; % input #11
 cutLossPct = x(12)/100 ; % input #12
 
@@ -79,10 +80,10 @@ clear volumeTT volumeMA
 closePriceTT = dataInput{4};
 volumeTT = dataInput{5};
 valueThreshold;
-valueLookback;
+valueMALookback;
 
 tradeValue = closePriceTT.Variables .* volumeTT.Variables ;
-valueMA = movmean (tradeValue, [valueLookback 0], 1, 'omitnan');
+valueMA = movmean (tradeValue, [valueMALookback 0], 1, 'omitnan');
 valueMA(isnan(valueMA)) = 0;
 valueMA(isinf(valueMA)) = 0;
 
@@ -108,7 +109,7 @@ volumeValueBufferSignal = movmax(volumeValueSignal,[volumeValueBufferDays, 0], 1
 % barFig = bar(signal);
 % title("volumeValueBufferSignal")
 
-clear volumeValueSignal volumeSignal valueSignal
+clear  volumeSignal valueSignal
 %=======================================================================
 
 %% Signal price return from low to close
@@ -157,18 +158,18 @@ clear closePriceTT priceMA
 %=======================================================================
 
 %% price volume value buffer days
-priceVolumeValueBufferDays;
+priceBufferDays;
 
-priceVolumeValueBuffer =  volumeValueBufferSignal .* priceRetLowCloseSignal .* priceMASignal;
+priceBuffer =  priceRetLowCloseSignal .* priceMASignal;
 
-priceVolumeValueBufferSignal = movmax(priceVolumeValueBuffer,[priceVolumeValueBufferDays, 0], 1, 'omitnan');
+priceBufferSignal = movmax(priceBuffer,[priceBufferDays, 0], 1, 'omitnan');
 
 % % check
-% signal = sum(priceVolumeValueBufferSignal,2);
+% signal = sum(priceBufferSignal,2);
 % barFig = bar(signal);
-% title("priceVolumeValueBufferSignal")
+% title("priceBufferSignal")
 
-clear priceVolumeValueBuffer volumeValueBufferSignal priceRetLowCloseSignal priceMASignal
+clear priceBuffer priceRetLowCloseSignal priceMASignal
 
 %=======================================================================
 
@@ -199,14 +200,14 @@ clear highPriceTT closePriceTT lastHighPrice LastHightoCloseRet
 %=======================================================================
 
 %% Pre final signal (not yet 1 step lag shifted to avoid look ahead bias)
-finalSignal = priceVolumeValueBufferSignal .* cutlossSignal;
+finalSignal = priceBufferSignal .* cutlossSignal .* volumeValueBufferSignal;
 
 % % check
-% signal = sum(preFinalSignal,2);
+% signal = sum(finalSignal,2);
 % barFig = bar(signal);
-% title("preFinalSignal")
+% title("finalSignal")
 
-clear priceVolumeValueBufferSignal cutlossSignal
+clear priceBufferSignal cutlossSignal
 
 %=======================================================================
 
@@ -234,6 +235,6 @@ tradeSignal.Properties.VariableNames  = symbols ;
 
 %% end of function, remove intermediary variables
 
-clearvars -except tradeSignal
+% clearvars -except tradeSignal
 
 end

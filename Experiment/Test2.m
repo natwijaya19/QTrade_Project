@@ -14,4 +14,20 @@ end
 dataInput = cleanDataFcn(dataInput);
 
 %% 
-% tradeSignalShortMomFcn
+
+% dummy paramInput
+paramInput = [
+    40  %1
+    200 %2
+    1   %3
+    5   %4
+    10  %5
+    6   %6
+    1   %7
+    120 %8
+    20  %9
+    5   %10
+    8   %11
+    5   %12
+    ];
+tradeSignal = tradeSignalShortMomFcn(paramInput, dataInput);

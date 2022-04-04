@@ -81,22 +81,6 @@ parfor Idx = 1: nSymbols
     closePriceTT(:,Idx).Variables = dataSynced(:,4).Variables;
     volumeTT(:,Idx).Variables = dataSynced(:,6).Variables;
 
-%     % Put the varName
-%     varNameIdx = openPriceTT.Properties.VariableNames; 
-%     varNameIdx(Idx) = cellstr(symbols(Idx));
-% 
-%     openPriceTT.Properties.VariableNames = varNameIdx ;
-%     highPriceTT.Properties.VariableNames = varNameIdx ;
-%     lowPriceTT.Properties.VariableNames = varNameIdx ;
-%     closePriceTT.Properties.VariableNames = varNameIdx ;
-%     volumeTT.Properties.VariableNames = varNameIdx ;
-    
-%     openPriceTT(:,Idx).Properties.VariableNames = cellstr(symbols(Idx));
-%     highPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-%     lowPriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-%     closePriceTT(:,Idx).Properties.VariableNames = symbols(Idx);
-%     volumeTT(:,Idx).Properties.VariableNames = symbols(Idx);
-
 end
 
 

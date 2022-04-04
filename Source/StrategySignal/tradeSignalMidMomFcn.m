@@ -1,4 +1,4 @@
-function tradeSignal = tradeSignalShortMomFcn(paramInput, dataInput)
+function tradeSignal = tradeSignalMidMomFcn(paramInput, dataInput)
 
 % tradeSignalShortMomFcn generate trading signal and is core of the
 % strategy
@@ -118,9 +118,9 @@ priceRetLowCloseLookback;
 lowPriceTT = dataInput{3};
 closePriceTT = dataInput{4};
 
-shiftedLlowPriceTT = lowPriceTT;
-shiftedLlowPriceTT.Variables = backShiftFcn(lowPriceTT.Variables, priceRetLowCloseLookback); 
-priceRetLowClose = (closePriceTT.Variables ./ shiftedLlowPriceTT.Variables) -1 ;
+shiftedClosePriceTT = closePriceTT;
+shiftedClosePriceTT.Variables = backShiftFcn(closePriceTT.Variables, priceRetLowCloseLookback); 
+priceRetLowClose = (closePriceTT.Variables ./ shiftedClosePriceTT.Variables) -1 ;
 priceRetLowClose(isnan(priceRetLowClose)) = 0;
 priceRetLowClose(isinf(priceRetLowClose)) = 0;
 

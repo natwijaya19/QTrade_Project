@@ -14,8 +14,10 @@ matFileSetUp.path   = pwd;
 
 marketData = MarketData (yahooDataSetUp, spreadSheetSetUp, matFileSetUp);
 marketData = marketData.loadSymbolMCapRef;
-marketData = marketData.loadDataFromMatFile;
 
+% marketData = marketData.loadDataFromMatFile;
+load("DataInput\priceVolumeData.mat");
+marketData.priceVolumeData = priceVolumeData;
 dataInputPreSelect = marketData.priceVolumeData;
 
 % prepare data for only within the target time period
@@ -34,7 +36,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=14, maxFcnEval=120)
+paramSetWFA = setUpWFAParam(marketData, nWalk=4, maxFcnEval=120)
 
 % uniqMktCap = paramSetWFA.uniqMktCap;
 % paramSetWFA.uniqMktCap = uniqMktCap(2);

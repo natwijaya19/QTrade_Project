@@ -138,7 +138,7 @@ classdef MarketData
             fullFileName = fullfile(path, fileName);
             matObj = matfile(fullFileName);
 
-            dataName = ["openPrice", "highPrice", "lowPrice", "closePrice", "volume"];
+%             dataName = ["openPrice", "highPrice", "lowPrice", "closePrice", "volume"];
             dataRaw = cell(1,numel(dataName));
 
             dataRaw{1} = matObj.openPrice;

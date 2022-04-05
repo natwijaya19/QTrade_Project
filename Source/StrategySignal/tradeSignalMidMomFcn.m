@@ -52,7 +52,6 @@ cutLossLookback         = x(12) ; % input #12
 cutLossPct              = x(13)/100 ; % input #13
 
 
-
 %=======================================================================
 
 %% Signal from higher volume than historical volume MA
@@ -213,7 +212,7 @@ clear priceBufferSignal cutlossSignal volumeValueBufferSignal
 %=======================================================================
 
 %% Warming up or initialization days
-lookbackArray = [volumeMALookback, priceMALookback, cutLossLookback] ;
+lookbackArray = [volumeMALookback, valueMALookback, priceRetLookback, priceMALookback, cutLossLookback] ;
 warmingUpPeriod = max(lookbackArray) ;
 finalSignal (1:warmingUpPeriod, :) = 0 ;
 
@@ -236,6 +235,6 @@ tradeSignal.Properties.VariableNames  = symbols ;
 
 %% end of function, remove intermediary variables
 
-% clearvars -except tradeSignal
+clearvars -except tradeSignal
 
 end

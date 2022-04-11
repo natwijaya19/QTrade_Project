@@ -22,50 +22,65 @@ end
 
 x = paramInput ; % TODO remove comment when final
 
-valueThreshold          = x(1)*10^9 ;  % input #1 in Rp Bn
-valueMALookback         = x(2) ;       % input #2 nDays`
-priceMAThreshold        = x(3)/100 ;   % input #3
-priceMALookback         = x(4) ;       % input #4
-priceMABufferDays       = x(5) ;       % input #5
-cutLossLookback         = x(6) ;       % input #6
-cutLossPct              = x(7)/100 ;   % input #7
+leadMALookback          = x(1);
+lagMALookback           = x(2);
+leadLagThreshold        = x(3) /100;
+valueThreshold          = x(5) *10^8; % in Rp 100Mn
+valueMALookback         = x(6);
+lagPriceMABackShiftDay  = x(7);
+lagPriceMARetThreshold  = x(8) /100;
+cutLossLookback         = x(9);
+cutLossPct              = x(10) /100;
+cutLossBufferDays       = x(11);
 
 %=======================================================================
 
-%% Signal from higher volume than historical volume MA
-% volumeMALookback;
-% volumeMATreshold;
-% 
-% volumeTT = dataInput{5};
-% volumeMA = movmean (volumeTT.Variables, [volumeMALookback 0], 1, 'omitnan');
-% volumeMA(isnan(volumeMA)) = 0;
-% volumeMA(isinf(volumeMA)) = 0;
-% 
-% volumeSignal = volumeTT.Variables > (volumeMA *volumeMATreshold);
-% volumeSignal(isnan(volumeSignal)) = 0;
-% volumeSignal(isinf(volumeSignal)) = 0;
-% 
-% % % check
-% % signal = sum(volumeSignal,2);
-% % barFig = bar(signal);
-% % title("volumeSignal")
-% 
-% clear volumeTT volumeMA
+%% Lead and Lag Signal
+closePrice = dataInput{4};
+lowPrice = dataInput{3};
+
+leadMALookback;
+lagMALookback;
+leadLagThreshold;
+leadLagBufferDays;
+
+leadPriceMA = movmean (closePrice.Variables, [leadMALookback, 0], 1, 'omitnan');
+leadPriceMA(isnan(leadPriceMA)) = 0;
+leadPriceMA(isinf(leadPriceMA)) = 0;
+
+lagPriceMA = movmean (lowPrice.Variables, [lagMALookback, 0], 1, 'omitnan');
+lagPriceMA(isnan(lagPriceMA)) = 0;
+lagPriceMA(isinf(lagPriceMA)) = 0;
+
+leadLagSignal = leadPriceMA > (lagPriceMA * leadLagThreshold);
+leadLagSignal(isnan(leadLagSignal)) = 0;
+leadLagSignal(isinf(leadLagSignal)) = 0;
+
+% % check
+% signal = sum(volumeSignal,2);
+% barFig = bar(signal);
+% title("volumeSignal")
+
+clear closePrice lowPrice leadPriceMA lagPriceMA 
 
 %=======================================================================
 
 %% Signal value threshold
 closePriceTT = dataInput{4};
 volumeTT = dataInput{5};
-% valueThreshold;
-% valueMALookback;
+
+valueThreshold;
+valueMALookback;
+
 
 tradeValue = closePriceTT.Variables .* volumeTT.Variables ;
 valueMA = movmean (tradeValue, [valueMALookback 0], 1, 'omitnan');
 valueMA(isnan(valueMA)) = 0;
 valueMA(isinf(valueMA)) = 0;
 
-valueSignal = valueMA > valueThreshold ;
+valueMASignal = valueMA > valueThreshold ;
+valueMASignal(isnan(valueMASignal)) = 0;
+valueMASignal(isinf(valueMASignal)) = 0;
 
 % % check
 % signal = sum(valueSignal,2);
@@ -76,121 +91,88 @@ clear tradeValue volumeTT closePriceTT valueMA
 
 %=======================================================================
 
-%% Volume value buffer days
-% volumeValueBufferDays ;
-% 
-% volumeValueSignal = volumeSignal .* valueSignal;
-% volumeValueBufferSignal = movmax(volumeValueSignal,[volumeValueBufferDays, 0], 1, 'omitnan');
-% 
-% % % check
-% % signal = sum(volumeValueBufferSignal,2);
-% % barFig = bar(signal);
-% % title("volumeValueBufferSignal")
-% 
-% clear  volumeSignal valueSignal volumeValueSignal
-%=======================================================================
+%% lagPriceMARetSignal
+lagPriceMABackShiftDay;
+lagMALookback;
+lagPriceMARetThreshold;
 
-%% Signal price return from low to close
-% priceRetThresh;
-% priceRetLookback;
-% priceRetBufferDays;
-% 
-% % lowPriceTT = dataInput{3};
-% closePriceTT = dataInput{4};
-% 
-% shiftedClosePriceTT = closePriceTT;
-% shiftedClosePriceTT.Variables = backShiftFcn(closePriceTT.Variables, priceRetLookback); 
-% priceRetLowClose = (closePriceTT.Variables ./ shiftedClosePriceTT.Variables) -1 ;
-% priceRetLowClose(isnan(priceRetLowClose)) = 0;
-% priceRetLowClose(isinf(priceRetLowClose)) = 0;
-% 
-% priceRetLowCloseSignal = priceRetLowClose > priceRetThresh;
-% priceRetBufferSignal = movmax(priceRetLowCloseSignal,[priceRetBufferDays, 0], 1, 'omitnan');
-% 
-% % % check
-% % signal = sum(priceRetLowCloseSignal,2);
-% % barFig = bar(signal);
-% % title("priceRetLowCloseSignal")
-% 
-% clear closePriceTT priceRetLowClose shiftedClosePriceTT priceRetLowCloseSignal
 
-%=======================================================================
+lowPrice = dataInput{3};
+lagPriceMA = movmean (lowPrice.Variables, [lagMALookback, 0], 1, 'omitnan');
+lagPriceMA(isnan(lagPriceMA)) = 0;
+lagPriceMA(isinf(lagPriceMA)) = 0;
 
-%% price MA signal
-% priceMALookback;
-% priceMAThreshold;
-% priceMABufferDays;
-closePriceTT = dataInput{4};
+shiftedLagPriceMA = lagPriceMA;
+shiftedLagPriceMA.Variables = backShiftFcn (lagPriceMA.Variables, lagPriceMABackShiftDay);
 
-priceMA = movmean (closePriceTT.Variables, [priceMALookback, 0], 1, 'omitnan');
-priceMA(isnan(priceMA)) = 0;
-priceMA(isinf(priceMA)) = 0;
+lagPriceMARet = (lagPriceMA.Variables ./ shiftedLagPriceMA.Variables) -1; 
+lagPriceMARet(isnan(lagPriceMARet)) = 0;
+lagPriceMARet(isinf(lagPriceMARet)) = 0;
 
-priceMASignal = closePriceTT.Variables > (priceMA .* priceMAThreshold);
-priceMABufferSignal = movmax(priceMASignal,[priceMABufferDays, 0], 1, 'omitnan');
+lagPriceMARetSignal = lagPriceMARet > lagPriceMARetThreshold;
+lagPriceMARetSignal(isnan(lagPriceMARetSignal)) = 0;
+lagPriceMARetSignal(isinf(lagPriceMARetSignal)) = 0;
+
 
 % % check
 % signal = sum(priceMASignal,2);
 % barFig = bar(signal);
 % title("priceMASignal")
 
-clear closePriceTT priceMA priceMASignal
-
-%=======================================================================
-
-%% price volume value buffer days
-% 
-% priceBufferSignal = priceMABufferSignal .* valueSignal;
-% 
-% % % check
-% % signal = sum(priceBufferSignal,2);
-% % barFig = bar(signal);
-% % title("priceBufferSignal")
-% 
-% clear priceRetBufferSignal priceMABufferSignal
+clear lowPrice lagPriceMA shiftedLagPriceMA lagPriceMARet 
 
 %=======================================================================
 
 %% cut loss signal
-% cutLossLookback;
-% cutLossPct;
+cutLossLookback;
+cutLossPct;
+cutLossBufferDays;
 
-highPriceTT = dataInput{2};
-closePriceTT = dataInput{4};
+% highPriceTT = dataInput{2};
+lowPriceTT = dataInput{4};
 
-lastHighPrice = movmax(highPriceTT.Variables ,[cutLossLookback, 0], 1, 'omitnan');
-lastHighPrice(isnan(lastHighPrice)) = 0;
-lastHighPrice(isinf(lastHighPrice)) = 0;
+lastHighestLowPrice = movmax(lowPriceTT.Variables ,[cutLossLookback, 0], 1, 'omitnan');
+lastHighestLowPrice(isnan(lastHighestLowPrice)) = 0;
+lastHighestLowPrice(isinf(lastHighestLowPrice)) = 0;
 
-LastHightoCloseRet = (closePriceTT.Variables ./ lastHighPrice) -1 ;
-LastHightoCloseRet(isnan(LastHightoCloseRet)) = 0;
-LastHightoCloseRet(isinf(LastHightoCloseRet)) = 0;
+cutLossRet = (lowPriceTT.Variables ./ lastHighestLowPrice) -1 ;
+cutLossRet(isnan(cutLossRet)) = 0;
+cutLossRet(isinf(cutLossRet)) = 0;
 
-cutlossSignal = LastHightoCloseRet > (-cutLossPct);
+cutLossSignal = cutLossRet > (-cutLossPct);
+cutLossSignal(isnan(cutLossSignal)) = 0;
+cutLossSignal(isinf(cutLossSignal)) = 0;
+
+cutLossBufferSignal = movmin(cutLossSignal,[cutLossBufferDays, 0], 1, 'omitnan');
 
 % % check
 % signal = sum(cutlossSignal,2);
 % barFig = bar(signal);
 % title("cutlossSignal")
 
-clear highPriceTT closePriceTT lastHighPrice LastHightoCloseRet
+clear lowPriceTT lastHighestLowPrice cutLossRet cutLossSignal 
 
 %=======================================================================
 
 %% Pre final signal (not yet 1 step lag shifted to avoid look ahead bias)
-finalSignal = cutlossSignal .* priceMABufferSignal .* valueSignal;
+finalSignal = leadLagSignal .* lagPriceMARetSignal .* valueMASignal .* cutLossBufferSignal ;
 
 % % check
 % signal = sum(finalSignal,2);
 % barFig = bar(signal);
 % title("finalSignal")
 
-clear  cutlossSignal priceMABufferSignal valueSignal
+clear  cutLossSignal priceMABufferSignal valueMASignal
 
 %=======================================================================
 
 %% Warming up or initialization days
-lookbackArray = [valueMALookback, priceMALookback, cutLossLookback] ;
+leadMALookback;
+lagMALookback;
+valueMALookback;
+cutLossLookback;
+
+lookbackArray   = [leadMALookback, lagMALookback, valueMALookback, cutLossLookback] ;
 warmingUpPeriod = max(lookbackArray) ;
 finalSignal (1:warmingUpPeriod, :) = 0 ;
 

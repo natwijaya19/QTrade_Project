@@ -118,24 +118,11 @@ valueSignal(isinf(valueSignal)) = 0;
 % barFig = bar(signal);
 % title("valueSignal")
 
-clear tradeValue volumeTT volumeMA closePriceTT
+clear tradeValue volumeTT volumeMA closePriceTT valueMA
 
 %=======================================================================
 
-%% Volume value buffer days
-% volumeValueBufferDays ;
-
-% volumeValueSignal = volumeSignal .* valueSignal;
-% volumeValueBufferSignal = movmax(volumeValueSignal,[volumeValueBufferDays, 0], 1, 'omitnan');
-
-% % check
-% signal = sum(volumeValueBufferSignal,2);
-% barFig = bar(signal);
-% title("volumeValueBufferSignal")
-
-%=======================================================================
-
-%% Signal price return from low to close
+%% priceRetLowCloseSignal
 % priceRetLowCloseThresh;
 % priceRetLowCloseLookback;
 
@@ -230,7 +217,7 @@ finalSignal = priceVolumeBufferSignal .* cutLossSignal .* valueSignal;
 % barFig = bar(signal);
 % title("finalSignal")
 
-clear priceBufferSignal cutLossSignal volumeValueBufferSignal
+clear priceVolumeBufferSignal cutLossSignal valueSignal
 
 %=======================================================================
 

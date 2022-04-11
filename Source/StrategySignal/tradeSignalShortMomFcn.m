@@ -44,20 +44,6 @@ end
 
 %% setup the params
 
-% % dummy paramInput
-% x = [
-%     40  %1
-%     200 %2
-%     1   %3
-%     5   %4
-%     6   %5
-%     1   %6
-%     120 %7
-%     5   %8
-%     8   %9
-%     5   %10
-%     ];
-
 %% Transfer input values to each variables. All variables are converted from
 % integer value in optimization adjusted to the suitable unit
 
@@ -71,7 +57,7 @@ priceMAThreshold        = x(5)/100 ;    % input #5
 priceMALookback         = x(6) ;        % input #6
 priceVolumeBufferDays   = x(7) ;        % input #7
 cutLossLookback         = x(8) ;        % input #8
-cutLossPct              = x(9)/100 ;   % input #9
+cutLossPct              = x(9)/100 ;    % input #9
 
 %=======================================================================
 

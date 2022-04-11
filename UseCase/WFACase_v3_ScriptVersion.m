@@ -36,7 +36,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=1)
+paramSetWFA = setUpWFAParam(marketData, nWalk=12)
 
 % uniqMktCap = paramSetWFA.uniqMktCap;
 % paramSetWFA.uniqMktCap = uniqMktCap(2);
@@ -85,7 +85,6 @@ folder      = "DataOutput";
 fileName    = "SummaryTable.xlsx";
 fullFileName = fullfile(path, folder, fileName);
 writetable(combinedWFAResults.summary, fullFileName);
-
 
 %% End
 disp("===============================END=====================================")

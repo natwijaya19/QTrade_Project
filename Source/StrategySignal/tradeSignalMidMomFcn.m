@@ -22,7 +22,7 @@ end
 
 x = paramInput ; % TODO remove comment when final
 
-valueThreshold          = x(1)*10^8 ;  % input #1 in Rp Bn
+valueThreshold          = x(1)*10^9 ;  % input #1 in Rp Bn
 valueMALookback         = x(2) ;       % input #2 nDays`
 priceMAThreshold        = x(3)/100 ;   % input #3
 priceMALookback         = x(4) ;       % input #4

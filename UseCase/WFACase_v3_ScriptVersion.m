@@ -1,8 +1,6 @@
-%% Start
 clear
 close all
 clc
-
 disp("===============================START=====================================")
 
 %% Load the market data
@@ -31,7 +29,6 @@ end
 
 marketData.priceVolumeData = dataInput;
 marketData = marketData.classifyMktCap;
-
 marketData = struct(marketData);
 
 %% Load setting and preparation

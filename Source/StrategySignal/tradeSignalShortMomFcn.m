@@ -63,16 +63,16 @@ end
 
 x = paramInput ; % TODO remove comment when final
 
-volumeMATreshold = x(1)/100 ; % input #1
-volumeMALookback = x(2) ; % input #2
-valueThreshold = x(3)*10^8 ; % input #3 in Rp 100Mn
-valueMALookback = x(4) ; % input #4 nDays`
-priceRetLowCloseThresh = x(5)/100 ; % input #5
-priceMAThreshold = x(6)/100 ; % input #6
-priceMALookback = x(7) ; % input #7
-priceVolumeBufferDays = x(8) ; % input #8
-cutLossLookback = x(9) ; % input #9
-cutLossPct = x(10)/100 ; % input #10
+volumeMATreshold        = x(1)/100 ;    % input #1
+volumeMALookback        = x(2) ;        % input #2
+valueThreshold          = x(3)*10^8 ;   % input #3 in Rp 100Mn
+valueMALookback         = x(4) ;        % input #4 nDays`
+priceRetLowCloseThresh  = x(5)/100 ;    % input #5
+priceMAThreshold        = x(6)/100 ;    % input #6
+priceMALookback         = x(7) ;        % input #7
+priceVolumeBufferDays   = x(8) ;        % input #8
+cutLossLookback         = x(9) ;        % input #9
+cutLossPct              = x(10)/100 ;   % input #10
 
 %=======================================================================
 
@@ -99,13 +99,13 @@ clear volumeTT volumeMA
 %=======================================================================
 
 %% Signal value threshold
-closePriceTT = dataInput{4};
-volumeTT = dataInput{5};
+closePriceTT    = dataInput{4};
+volumeTT        = dataInput{5};
 % valueThreshold;
 % valueMALookback;
 
-tradeValue = closePriceTT.Variables .* volumeTT.Variables ;
-valueMA = movmean (tradeValue, [valueMALookback 0], 1, 'omitnan');
+tradeValue  = closePriceTT.Variables .* volumeTT.Variables ;
+valueMA     = movmean (tradeValue, [valueMALookback 0], 1, 'omitnan');
 valueMA(isnan(valueMA)) = 0;
 valueMA(isinf(valueMA)) = 0;
 
@@ -126,9 +126,9 @@ clear tradeValue volumeTT volumeMA closePriceTT valueMA
 % priceRetLowCloseThresh;
 % priceRetLowCloseLookback;
 
-lowPriceTT = dataInput{3};
-closePriceTT = dataInput{4};
-priceRetLowClose = (closePriceTT.Variables ./ lowPriceTT.Variables) -1 ;
+lowPriceTT          = dataInput{3};
+closePriceTT        = dataInput{4};
+priceRetLowClose    = (closePriceTT.Variables ./ lowPriceTT.Variables) -1 ;
 priceRetLowClose(isnan(priceRetLowClose)) = 0;
 priceRetLowClose(isinf(priceRetLowClose)) = 0;
 
@@ -150,7 +150,7 @@ clear lowPriceTT closePriceTT priceRetLowClose
 % priceMAThreshold;
 closePriceTT = dataInput{4};
 
-priceMA = movmean (closePriceTT.Variables, [priceMALookback, 0], 1, 'omitnan');
+priceMA                 = movmean (closePriceTT.Variables, [priceMALookback, 0], 1, 'omitnan');
 priceMA(isnan(priceMA)) = 0;
 priceMA(isinf(priceMA)) = 0;
 
@@ -187,8 +187,8 @@ clear priceVolumeBuffer priceRetLowCloseSignal priceMASignal volumeSignal
 % cutLossLookback;
 % cutLossPct;
 
-highPriceTT = dataInput{2};
-closePriceTT = dataInput{4};
+highPriceTT     = dataInput{2};
+closePriceTT    = dataInput{4};
 
 lastHighPrice = movmax(highPriceTT.Variables ,[cutLossLookback, 0], 1, 'omitnan');
 lastHighPrice(isnan(lastHighPrice)) = 0;
@@ -222,7 +222,7 @@ clear priceVolumeBufferSignal cutLossSignal valueSignal
 %=======================================================================
 
 %% Warming up or initialization days
-lookbackArray = [volumeMALookback, priceMALookback, cutLossLookback] ;
+lookbackArray   = [volumeMALookback, priceMALookback, cutLossLookback] ;
 warmingUpPeriod = max(lookbackArray) ;
 finalSignal (1:warmingUpPeriod, :) = 0 ;
 
@@ -234,8 +234,8 @@ finalSignal (1:warmingUpPeriod, :) = 0 ;
 %=======================================================================
 
 %% transfer to the output variable
-tradeSignal = dataInput{1};
-tradeSignal.Variables = finalSignal;
+tradeSignal             = dataInput{1};
+tradeSignal.Variables   = finalSignal;
 
 symbols = tradeSignal.Properties.VariableNames ;
 symbols = strrep(symbols,"_open","_signal") ;

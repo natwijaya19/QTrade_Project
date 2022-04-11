@@ -1,8 +1,6 @@
-%% Start
 clear
 close all
 clc
-
 disp("===============================START=====================================")
 
 %% Load the market data

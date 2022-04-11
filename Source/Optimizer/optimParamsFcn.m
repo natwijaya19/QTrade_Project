@@ -74,9 +74,7 @@ disp(textDisp);
 
 %% put UB into tradingSignalParam if FVal < minPortfolioReturn
 
-fvalCriteria = fval <= -(minPortRet);
-exitflagCriteria = exitflag==0;
-validIF = and(fvalCriteria, exitflagCriteria);
+validIF = exitflag==0;
 if validIF
     optimizedTradingSignalParam = sol ;
 else

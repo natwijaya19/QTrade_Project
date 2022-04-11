@@ -42,7 +42,6 @@ useParallel = true;
 LBUBConst = paramSetWFA.lbubConst;
 nVars = paramSetWFA.nVars;
 maxFcnEval = paramSetWFA.maxFcnEval;
-minPortRet = paramSetWFA.minPortRet;
 
 %% define function handle of objectiveFcn and nonLinearConstraintFcn
 
@@ -74,9 +73,7 @@ disp(textDisp);
 
 %% put UB into tradingSignalParam if FVal < minPortfolioReturn
 
-fvalCriteria = fval <= -(minPortRet);
-exitflagCriteria = exitflag==0;
-validIF = and(fvalCriteria, exitflagCriteria);
+validIF = exitflag==0;
 if validIF
     optimizedTradingSignalParam = sol ;
 else

@@ -25,13 +25,13 @@ x = paramInput ; % TODO remove comment when final
 leadMALookback          = x(1);
 lagMALookback           = x(2);
 leadLagThreshold        = x(3) /100;
-valueThreshold          = x(5) *10^8; % in Rp 100Mn
-valueMALookback         = x(6);
-lagPriceMABackShiftDay  = x(7);
-lagPriceMARetThreshold  = x(8) /100;
-cutLossLookback         = x(9);
-cutLossPct              = x(10) /100;
-cutLossBufferDays       = x(11);
+valueThreshold          = x(4) *10^8; % in Rp 100Mn
+valueMALookback         = x(5);
+lagPriceMABackShiftDay  = x(6);
+lagPriceMARetThreshold  = x(7) /100;
+cutLossLookback         = x(8);
+cutLossPct              = x(9) /100;
+cutLossBufferDays       = x(10);
 
 %=======================================================================
 
@@ -42,7 +42,6 @@ lowPrice = dataInput{3};
 leadMALookback;
 lagMALookback;
 leadLagThreshold;
-leadLagBufferDays;
 
 leadPriceMA = movmean (closePrice.Variables, [leadMALookback, 0], 1, 'omitnan');
 leadPriceMA(isnan(leadPriceMA)) = 0;
@@ -102,10 +101,9 @@ lagPriceMA = movmean (lowPrice.Variables, [lagMALookback, 0], 1, 'omitnan');
 lagPriceMA(isnan(lagPriceMA)) = 0;
 lagPriceMA(isinf(lagPriceMA)) = 0;
 
-shiftedLagPriceMA = lagPriceMA;
-shiftedLagPriceMA.Variables = backShiftFcn (lagPriceMA.Variables, lagPriceMABackShiftDay);
+shiftedLagPriceMA= backShiftFcn (lagPriceMA, lagPriceMABackShiftDay);
 
-lagPriceMARet = (lagPriceMA.Variables ./ shiftedLagPriceMA.Variables) -1; 
+lagPriceMARet = (lagPriceMA ./ shiftedLagPriceMA) -1; 
 lagPriceMARet(isnan(lagPriceMARet)) = 0;
 lagPriceMARet(isinf(lagPriceMARet)) = 0;
 

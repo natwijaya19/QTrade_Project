@@ -71,7 +71,7 @@ packageWFAResults{nRowCell}= combinedWFAResults;
 % save packageWFAResults
 path        = pwd;
 folder      = "DataOutput";
-fileName    = "packageWFAResults_Jan2021_to_Mar2022.mat";
+fileName    = "packageWFAResults.mat";
 fullFileName = fullfile(path, folder,fileName);
 save(fullFileName, "packageWFAResults");
 

@@ -33,7 +33,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=12)
+paramSetWFA = setUpWFAParam(marketData, nWalk=1)
 
 % uniqMktCap = paramSetWFA.uniqMktCap;
 % paramSetWFA.uniqMktCap = uniqMktCap(2);
@@ -61,13 +61,12 @@ if exist("packageWFAResults", "var")
     clearvars packageWFAResults
 end
 
-packageWFAResults.lowBigCap             = mCapWalkResults{1} ;
-packageWFAResults.lowMidCap             = mCapWalkResults{2} ;
-packageWFAResults.lowSmallCap           = mCapWalkResults{3} ;
-packageWFAResults.upBigCap              = mCapWalkResults{4};
-packageWFAResults.upMidCap              = mCapWalkResults{5};
-packageWFAResults.upSmallCap            = mCapWalkResults{6};
-packageWFAResults.combinedWFAResults    = combinedWFAResults;
+nRowCell = numel(packageWFAResults)+1;
+packageWFAResults = cell(1, nRowCell);
+for idx = 1: numel(mCapWalkResults)
+    packageWFAResults{idx} = mCapWalkResults{idx};
+end
+packageWFAResults{nRowCell}= combinedWFAResults;
 
 % save packageWFAResults
 path        = pwd;

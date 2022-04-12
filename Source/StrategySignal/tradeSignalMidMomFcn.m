@@ -7,119 +7,36 @@ function tradeSignal = tradeSignalMidMomFcn(paramInput, dataInput)
 arguments
     paramInput {mustBeNumeric}
     dataInput cell
-
 end
 %% setUp dataInput
 % dataInput = dataClean;
 
-%=======================================================================
-
 %% setup the params
 
+%=======================================================================
 
 %% Transfer input values to each variables. All variables are converted from
 % integer value in optimization adjusted to the suitable unit
 
 x = paramInput ; % TODO remove comment when final
 
-valueThreshold          = x(1)*10^9 ;  % input #1 in Rp Bn
-valueMALookback         = x(2) ;       % input #2 nDays`
-priceMAThreshold        = x(3)/100 ;   % input #3
-priceMALookback         = x(4) ;       % input #4
-priceMABufferDays       = x(5) ;       % input #5
-cutLossLookback         = x(6) ;       % input #6
-cutLossPct              = x(7)/100 ;   % input #7
-
-%=======================================================================
-
-%% Signal from higher volume than historical volume MA
-% volumeMALookback;
-% volumeMATreshold;
-% 
-% volumeTT = dataInput{5};
-% volumeMA = movmean (volumeTT.Variables, [volumeMALookback 0], 1, 'omitnan');
-% volumeMA(isnan(volumeMA)) = 0;
-% volumeMA(isinf(volumeMA)) = 0;
-% 
-% volumeSignal = volumeTT.Variables > (volumeMA *volumeMATreshold);
-% volumeSignal(isnan(volumeSignal)) = 0;
-% volumeSignal(isinf(volumeSignal)) = 0;
-% 
-% % % check
-% % signal = sum(volumeSignal,2);
-% % barFig = bar(signal);
-% % title("volumeSignal")
-% 
-% clear volumeTT volumeMA
-
-%=======================================================================
-
-%% Signal value threshold
-closePriceTT = dataInput{4};
-volumeTT = dataInput{5};
-% valueThreshold;
-% valueMALookback;
-
-tradeValue = closePriceTT.Variables .* volumeTT.Variables ;
-valueMA = movmean (tradeValue, [valueMALookback 0], 1, 'omitnan');
-valueMA(isnan(valueMA)) = 0;
-valueMA(isinf(valueMA)) = 0;
-
-valueSignal = valueMA > valueThreshold ;
-
-% % check
-% signal = sum(valueSignal,2);
-% barFig = bar(signal);
-% title("valueSignal")
-
-clear tradeValue volumeTT closePriceTT valueMA
-
-%=======================================================================
-
-%% Volume value buffer days
-% volumeValueBufferDays ;
-% 
-% volumeValueSignal = volumeSignal .* valueSignal;
-% volumeValueBufferSignal = movmax(volumeValueSignal,[volumeValueBufferDays, 0], 1, 'omitnan');
-% 
-% % % check
-% % signal = sum(volumeValueBufferSignal,2);
-% % barFig = bar(signal);
-% % title("volumeValueBufferSignal")
-% 
-% clear  volumeSignal valueSignal volumeValueSignal
-%=======================================================================
-
-%% Signal price return from low to close
-% priceRetThresh;
-% priceRetLookback;
-% priceRetBufferDays;
-% 
-% % lowPriceTT = dataInput{3};
-% closePriceTT = dataInput{4};
-% 
-% shiftedClosePriceTT = closePriceTT;
-% shiftedClosePriceTT.Variables = backShiftFcn(closePriceTT.Variables, priceRetLookback); 
-% priceRetLowClose = (closePriceTT.Variables ./ shiftedClosePriceTT.Variables) -1 ;
-% priceRetLowClose(isnan(priceRetLowClose)) = 0;
-% priceRetLowClose(isinf(priceRetLowClose)) = 0;
-% 
-% priceRetLowCloseSignal = priceRetLowClose > priceRetThresh;
-% priceRetBufferSignal = movmax(priceRetLowCloseSignal,[priceRetBufferDays, 0], 1, 'omitnan');
-% 
-% % % check
-% % signal = sum(priceRetLowCloseSignal,2);
-% % barFig = bar(signal);
-% % title("priceRetLowCloseSignal")
-% 
-% clear closePriceTT priceRetLowClose shiftedClosePriceTT priceRetLowCloseSignal
+priceMAThreshold        = x(1)/100 ;  
+priceMALookback         = x(2) ;      
+priceMABufferDays       = x(3) ;       
+valueThreshold          = x(4)*10^8 ;  % input #1 in Rp Bn
+valueMALookback         = x(5) ;       
+cutLossLookback         = x(6) ; 
+cutLossPct              = x(7)/100 ;  
+cutLossBufferDays       = x(8);
 
 %=======================================================================
 
 %% price MA signal
-% priceMALookback;
-% priceMAThreshold;
-% priceMABufferDays;
+priceMALookback;
+priceMAThreshold;
+priceMABufferDays;
+
+% lowPriceTT = dataInput{4};
 closePriceTT = dataInput{4};
 
 priceMA = movmean (closePriceTT.Variables, [priceMALookback, 0], 1, 'omitnan');
@@ -138,54 +55,70 @@ clear closePriceTT priceMA priceMASignal
 
 %=======================================================================
 
-%% price volume value buffer days
-% 
-% priceBufferSignal = priceMABufferSignal .* valueSignal;
-% 
-% % % check
-% % signal = sum(priceBufferSignal,2);
-% % barFig = bar(signal);
-% % title("priceBufferSignal")
-% 
-% clear priceRetBufferSignal priceMABufferSignal
+%% Signal value threshold
+closePriceTT = dataInput{4};
+volumeTT = dataInput{5};
+% valueThreshold;
+% valueMALookback;
+
+tradeValue = closePriceTT.Variables .* volumeTT.Variables ;
+valueMA = movmean (tradeValue, [valueMALookback 0], 1, 'omitnan');
+valueMA(isnan(valueMA)) = 0;
+valueMA(isinf(valueMA)) = 0;
+
+valueMASignal = valueMA > valueThreshold ;
+valueMASignal(isnan(valueMASignal)) = 0;
+valueMASignal(isinf(valueMASignal)) = 0;
+
+% % check
+% signal = sum(valueSignal,2);
+% barFig = bar(signal);
+% title("valueSignal")
+
+clear closePriceTT volumeTT  tradeValue valueMA
 
 %=======================================================================
 
 %% cut loss signal
-% cutLossLookback;
-% cutLossPct;
+cutLossLookback;
+cutLossPct;
+cutLossBufferDays;
 
-highPriceTT = dataInput{2};
-closePriceTT = dataInput{4};
+% highPriceTT = dataInput{2};
+lowPriceTT = dataInput{4};
 
-lastHighPrice = movmax(highPriceTT.Variables ,[cutLossLookback, 0], 1, 'omitnan');
-lastHighPrice(isnan(lastHighPrice)) = 0;
-lastHighPrice(isinf(lastHighPrice)) = 0;
+lastHighestLowPrice = movmax(lowPriceTT.Variables ,[cutLossLookback, 0], 1, 'omitnan');
+lastHighestLowPrice(isnan(lastHighestLowPrice)) = 0;
+lastHighestLowPrice(isinf(lastHighestLowPrice)) = 0;
 
-LastHightoCloseRet = (closePriceTT.Variables ./ lastHighPrice) -1 ;
-LastHightoCloseRet(isnan(LastHightoCloseRet)) = 0;
-LastHightoCloseRet(isinf(LastHightoCloseRet)) = 0;
+cutLossRet = (lowPriceTT.Variables ./ lastHighestLowPrice) -1 ;
+cutLossRet(isnan(cutLossRet)) = 0;
+cutLossRet(isinf(cutLossRet)) = 0;
 
-cutlossSignal = LastHightoCloseRet > (-cutLossPct);
+cutLossSignal = cutLossRet > (-cutLossPct);
+cutLossSignal(isnan(cutLossSignal)) = 0;
+cutLossSignal(isinf(cutLossSignal)) = 0;
+
+cutLossBufferSignal = movmin(cutLossSignal,[cutLossBufferDays, 0], 1, 'omitnan');
 
 % % check
 % signal = sum(cutlossSignal,2);
 % barFig = bar(signal);
 % title("cutlossSignal")
 
-clear highPriceTT closePriceTT lastHighPrice LastHightoCloseRet
+clear lowPriceTT lastHighestLowPrice cutLossRet cutLossSignal 
 
 %=======================================================================
 
 %% Pre final signal (not yet 1 step lag shifted to avoid look ahead bias)
-finalSignal = cutlossSignal .* priceMABufferSignal .* valueSignal;
+finalSignal = priceMABufferSignal .* valueMASignal .* cutLossBufferSignal;
 
 % % check
 % signal = sum(finalSignal,2);
 % barFig = bar(signal);
 % title("finalSignal")
 
-clear  cutlossSignal priceMABufferSignal valueSignal
+clear  cutlossSignal priceMABufferSignal valueMASignal
 
 %=======================================================================
 

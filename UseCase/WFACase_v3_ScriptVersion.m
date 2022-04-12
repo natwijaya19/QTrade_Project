@@ -33,7 +33,7 @@ marketData = struct(marketData);
 
 %% Load setting and preparation
 
-paramSetWFA = setUpWFAParam(marketData, nWalk=16)
+paramSetWFA = setUpWFAParam(marketData, nWalk=1)
 
 % uniqMktCap = paramSetWFA.uniqMktCap;
 % paramSetWFA.uniqMktCap = uniqMktCap(2);

@@ -61,7 +61,7 @@ if exist("packageWFAResults", "var")
     clearvars packageWFAResults
 end
 
-nRowCell = numel(packageWFAResults)+1;
+nRowCell = numel(mCapWalkResults)+1;
 packageWFAResults = cell(1, nRowCell);
 for idx = 1: numel(mCapWalkResults)
     packageWFAResults{idx} = mCapWalkResults{idx};

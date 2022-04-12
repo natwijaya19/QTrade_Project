@@ -61,18 +61,17 @@ if exist("packageWFAResults", "var")
     clearvars packageWFAResults
 end
 
-packageWFAResults.lowBigCap             = mCapWalkResults{1} ;
-packageWFAResults.lowMidCap             = mCapWalkResults{2} ;
-packageWFAResults.lowSmallCap           = mCapWalkResults{3} ;
-packageWFAResults.upBigCap              = mCapWalkResults{4};
-packageWFAResults.upMidCap              = mCapWalkResults{5};
-packageWFAResults.upSmallCap            = mCapWalkResults{6};
-packageWFAResults.combinedWFAResults    = combinedWFAResults;
+nRowCell = numel(packageWFAResults)+1;
+packageWFAResults = cell(1, nRowCell);
+for idx = 1: numel(mCapWalkResults)
+    packageWFAResults{idx} = mCapWalkResults{idx};
+end
+packageWFAResults{nRowCell}= combinedWFAResults;
 
 % save packageWFAResults
 path        = pwd;
 folder      = "DataOutput";
-fileName    = "packageWFAResults_Jan2021_to_Mar2022.mat";
+fileName    = "packageWFAResults.mat";
 fullFileName = fullfile(path, folder,fileName);
 save(fullFileName, "packageWFAResults");
 

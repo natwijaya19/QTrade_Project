@@ -20,7 +20,9 @@ marketData.priceVolumeData = priceVolumeData;
 marketData = marketData.classifyMktCap;
 
 %% 
+tic
 marketData = marketData.loadDataFromYahoo;
+toc
 
 
 %% Save the priceVolume data to matfile

@@ -14,7 +14,9 @@ matFileSetUp.path   = pwd;
 
 marketData = MarketData (yahooDataSetUp, spreadSheetSetUp, matFileSetUp);
 marketData = marketData.loadSymbolMCapRef;
-marketData = marketData.loadDataFromMatFile;
+% marketData = marketData.loadDataFromMatFile;
+load("DataInput\priceVolumeData.mat");
+marketData.priceVolumeData = priceVolumeData;
 marketData = marketData.classifyMktCap;
 
 %% 

@@ -35,7 +35,7 @@ minAvg60DaysRet             = paramSetWFA.minAvg60DaysRet;
 minNStepTestRet             = paramSetWFA.minNStepTestRet;
 
 % generate signal
-tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInput);
+tradingSignalOut = tradeSignalMidMomFcn (tradingSignalParam, dataInput);
 
 % backtest the signal against the price
 tradingSignalIn = tradingSignalOut;

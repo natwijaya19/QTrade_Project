@@ -95,17 +95,13 @@ end
 
 % replace string .JK from each symbol name with _open, _high, _low, _close
 % and _volume
-openPriceVar = openPriceTT.Properties.VariableNames;
-highPriceVar = highPriceTT.Properties.VariableNames;
-lowPriceVar = lowPriceTT.Properties.VariableNames;
-closePriceVar = closePriceTT.Properties.VariableNames;
-volumeVar = volumeTT.Properties.VariableNames;
+symbolsVarName = openPriceTT.Properties.VariableNames;
 
-openPriceVar = strcat(string(openPriceVar), "_open");
-highPriceVar  = strcat(string(openPriceVar), "_high");
-lowPriceVar = strcat(string(openPriceVar), "_low");
-closePriceVar = strcat(string(openPriceVar), "_close");
-volumeVar = strcat(string(openPriceVar), "_volume");
+openPriceVar = strcat(string(symbolsVarName), "_Open");
+highPriceVar  = strcat(string(symbolsVarName), "_High");
+lowPriceVar = strcat(string(symbolsVarName), "_Low");
+closePriceVar = strcat(string(symbolsVarName), "_Close");
+volumeVar = strcat(string(symbolsVarName), "_Volume");
 
 openPriceTT.Properties.VariableNames = openPriceVar ;
 highPriceTT.Properties.VariableNames = highPriceVar ;

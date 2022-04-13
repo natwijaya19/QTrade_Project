@@ -15,7 +15,7 @@ function Fval = objectiveFcn (tradingSignalParam, dataInputBT, paramSetWFA)
 
     
     % generate signal
-    tradingSignalOut = tradeSignalShortMomFcn (tradingSignalParam, dataInputBT);
+    tradingSignalOut = tradeSignalMidMomFcn (tradingSignalParam, dataInputBT);
     clear tradingSignalParam
     
     % backtest the signal against the price
